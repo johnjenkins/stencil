@@ -36,9 +36,9 @@ export const runTsProgram = async (
   const emitCallback: ts.WriteFileCallback = (emitFilePath, data, _w, _e, tsSourceFiles) => {
     const tsSourceFile = tsSourceFiles[0]?.fileName;
 
-    if (tsSourceFile.endsWith('.tsx') && tsSourceFile.match('/node_modules/') && emitFilePath.endsWith('.js')) return;
+    if (tsSourceFile.endsWith('.tsx') && tsSourceFile.match('/node_modules/') && (emitFilePath.endsWith('.js') || emitFilePath.endsWith('js.map'))) return;
 
-    if (emitFilePath.endsWith('.js')) {
+    if (emitFilePath.endsWith('.js') || emitFilePath.endsWith('js.map')) {
       updateModule(config, compilerCtx, buildCtx, tsSourceFiles[0], data, emitFilePath, tsTypeChecker, null);
 
       // re-reun transpile for any mixin dependents
