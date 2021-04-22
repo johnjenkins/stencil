@@ -32,6 +32,27 @@ import type {
   VNodeData,
 } from './stencil-public-runtime';
 
+export interface SourceMap {
+  file: string;
+  mappings: string;
+  names: string[];
+  sourceRoot?: string;
+  sources: string[];
+  sourcesContent?: string[];
+  version: number;
+}
+
+export interface RollupSourceMap {
+  file: string;
+  mappings: string;
+  names: string[];
+  sources: string[];
+  sourcesContent: string[];
+  version: number;
+  toString(): string;
+  toUrl(): string;
+}
+
 export interface PrintLine {
   lineIndex: number;
   lineNumber: number;
@@ -364,6 +385,7 @@ export interface RollupChunkResult {
   isBrowserLoader: boolean;
   imports: string[];
   moduleFormat: ModuleFormat;
+  map: RollupSourceMap;
 }
 
 export interface BundleModule {
@@ -713,6 +735,7 @@ export interface ComponentCompilerMeta extends ComponentCompilerFeatures {
   isCollectionDependency: boolean;
   docs: CompilerJsDoc;
   jsFilePath: string;
+  sourceMapPath: string;
   listeners: ComponentCompilerListener[];
   events: ComponentCompilerEvent[];
   methods: ComponentCompilerMethod[];
@@ -1407,6 +1430,8 @@ export interface Module {
   staticSourceFile: any;
   staticSourceFileText: string;
   mixinFilePaths: string[];
+  sourceMapPath: string;
+  sourceMapFileText: string;
 
   // build features
   hasVdomAttribute: boolean;
@@ -2418,7 +2443,7 @@ export interface CompilerWorkerContext {
     minifyOpts: any,
     transpile: boolean,
     inlineHelpers: boolean,
-  ): Promise<{ output: string; diagnostics: Diagnostic[] }>;
+  ): Promise<{ output: string; diagnostics: Diagnostic[]; sourceMap?: SourceMap; }>;
   prerenderWorker(prerenderRequest: PrerenderUrlRequest): Promise<PrerenderUrlResults>;
   transformCssToEsm(input: TransformCssToEsmInput): Promise<TransformCssToEsmOutput>;
 }
