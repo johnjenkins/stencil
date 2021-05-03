@@ -121,7 +121,9 @@ export namespace Components {
         "mixinTest": string;
     }
     interface PropCmp {
+        "clothes": string;
         "first": string;
+        "fullName": string;
         "lastName": string;
         /**
           * Mode
@@ -415,7 +417,9 @@ declare namespace LocalJSX {
         "mixinTest"?: string;
     }
     interface PropCmp {
+        "clothes"?: string;
         "first"?: string;
+        "fullName"?: string;
         "lastName"?: string;
         /**
           * Mode
