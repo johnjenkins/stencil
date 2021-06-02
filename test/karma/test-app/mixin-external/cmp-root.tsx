@@ -23,6 +23,7 @@ export class MixinExternal implements ComponentInterface {
         return value;
       }
     }
+    return null;
   }
 
   constructor() {

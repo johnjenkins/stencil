@@ -1,9 +1,8 @@
 import type * as d from '../../../declarations';
-import { createStaticGetter, convertValueToLiteral, findImportDeclsWithMemberNames, getImportNamedBindings, getMixinsFromDecorator, MixinDecorators, ImportDeclObj, findImportDeclObjWithModPath, TSsourceFileWithModules, TSModule } from '../transform-utils';
+import { createStaticGetter, convertValueToLiteral, findImportDeclsWithMemberNames, getImportNamedBindings, getMixinsFromDecorator, MixinDecorators, ImportDeclObj, findImportDeclObjWithModPath, TSsourceFileWithModules, TSModule, cloneNode } from '../transform-utils';
 import { isDecoratorNamed } from './decorator-utils';
 import ts from 'typescript';
 import { augmentDiagnosticWithNode, buildError, buildWarn } from '@utils';
-import { cloneNode } from '@wessberg/ts-clone-node';
 import { dirname, join } from 'path';
 
 /**
@@ -109,9 +108,9 @@ export const mixinStatements = (sourceNode: ts.SourceFile, foundMixins: FoundMix
   });
 
   return [
-    ...importStatements.map(st => cloneNode(st, {typescript: ts, preserveSymbols: false, setOriginalNodes: true, setParents: true }) ),
+    ...importStatements.map(st => cloneNode(st) ),
     ...sourceNode.statements.filter(st => !ts.isImportDeclaration(st)),
-    ...allStatements.map(st => cloneNode(st.statement, {typescript: ts, preserveSymbols: true, setOriginalNodes: true, setParents: true }) )
+    ...allStatements.map(st => cloneNode(st.statement) )
   ];
 }
 
@@ -466,6 +465,18 @@ const collateMixinClassesMembers = (decoratorNames: string[], mixinClasses: Foun
       if (foundClass) deDupedMembers = dedupeClassMembers(deDupedMembers, (foundClass.mixinClassMembers || foundClass.mixinClass.members));
     }
   );
+
+  deDupedMembers.forEach(mem => {
+    const mixinSrc = ts.createSourceMapSource(
+      mem.getSourceFile().fileName,
+      ts.sys.readFile(mem.getSourceFile().fileName)
+    );
+    ts.setSourceMapRange(mem, {
+      source: mixinSrc,
+      pos:  mem.pos,
+      end: mem.end
+    });
+  })
   return deDupedMembers;
 }
 
