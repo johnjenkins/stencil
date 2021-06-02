@@ -2,6 +2,7 @@ import type * as d from '../../declarations';
 import { augmentDiagnosticWithNode, buildError, normalizePath } from '@utils';
 import { MEMBER_DECORATORS_TO_REMOVE } from './decorators-to-static/decorators-constants';
 import ts from 'typescript';
+import { cloneNode as wsCloneNode } from "@wessberg/ts-clone-node";
 
 export const getScriptTarget = () => {
   // using a fn so the browser compiler doesn't require the global ts for startup
@@ -620,6 +621,27 @@ export const findImportDeclObjWithModPath = (declarationMap: Map<string, ImportD
     }
   }
   return {classNames: classNames, importObjs: foundImportObjs};
+}
+
+export const cloneNode = (node: any) => {
+  return wsCloneNode(node, {
+    typescript: ts,
+    setOriginalNodes: true,
+    preserveSymbols: true,
+    finalize: (clonedNode: ts.Node, oldNode: ts.Node) => {
+      if (!oldNode.getSourceFile()) return;
+
+      const mixinSrc = ts.createSourceMapSource(
+        oldNode.getSourceFile().fileName,
+        ts.sys.readFile(oldNode.getSourceFile().fileName)
+      );
+      ts.setSourceMapRange(clonedNode, {
+        source: mixinSrc,
+        pos:  oldNode.pos,
+        end: oldNode.end
+      });
+    }
+  });
 }
 
 export interface ImportDeclObj {declaration: ts.ImportDeclaration, identifier: string};
