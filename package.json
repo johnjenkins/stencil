@@ -1,5 +1,5 @@
 {
-  "name": "@john.jenkins/stencil-community",
+  "name": "@johnjenkins/stencil-community",
   "version": "0.0.1",
   "license": "MIT",
   "main": "./internal/stencil-core/index.cjs",
