@@ -1,4 +1,4 @@
-## 🍾 [0.0.1-dryrun](https://github.com/johnjenkins/stencil/compare/v2.6.0...v0.0.1-dryrun) (2021-06-02)
+## 🏐 [0.0.1](https://github.com/johnjenkins/stencil/compare/v2.6.0...v0.0.1) (2021-06-03)
 
 ### Bug Fixes
 
