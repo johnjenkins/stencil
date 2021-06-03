@@ -1,6 +1,6 @@
 {
   "name": "@john.jenkins/stencil-community",
-  "version": "0.0.1",
+  "version": "0.0.1-dryrun",
   "license": "MIT",
   "main": "./internal/stencil-core/index.cjs",
   "module": "./internal/stencil-core/index.js",
@@ -127,7 +127,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ionic-team/stencil.git"
+    "url": "git+git@github.com:johnjenkins/stencil.git"
   },
   "author": "Ionic Team",
   "homepage": "https://stenciljs.com/",
@@ -136,6 +136,7 @@
     "web components",
     "components",
     "stencil",
+    "community",
     "ionic",
     "webapp",
     "custom elements",
