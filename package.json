@@ -25,7 +25,7 @@
     "build": "node scripts && npm run tsc.prod && npm run rollup.prod.ci",
     "build.prod": "node scripts && npm run tsc.scripts && npm run tsc.prod && npm run rollup.prod.ci",
     "watch": "node scripts && npm run tsc && concurrently \"npm run rollup.watch\" \"npm run tsc.watch\"",
-    "release": "node scripts --release --publish",
+    "release": "node scripts --release --publish --access=public",
     "release.prepare": "node scripts --release --prepare",
     "tsc": "tsc --incremental",
     "tsc.prod": "tsc",
