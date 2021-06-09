@@ -2,7 +2,7 @@ import type * as d from '../../declarations';
 import { augmentDiagnosticWithNode, buildError, normalizePath } from '@utils';
 import { MEMBER_DECORATORS_TO_REMOVE } from './decorators-to-static/decorators-constants';
 import ts from 'typescript';
-import { cloneNode as wsCloneNode } from "ts-clone-node";
+import { cloneNode as wsCloneNode } from 'ts-clone-node';
 
 export const getScriptTarget = () => {
   // using a fn so the browser compiler doesn't require the global ts for startup
