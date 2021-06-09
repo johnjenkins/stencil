@@ -1,3 +1,19 @@
+## 🍒 [0.0.3](https://github.com/johnjenkins/stencil/compare/v2.6.0...v0.0.3) (2021-06-09)
+
+
+### Bug Fixes
+
+* **@Mixin cloneNode:** re-add questionDotTokens on clone ([aa6b994](https://github.com/johnjenkins/stencil/commit/aa6b994ca550bb6d44754db3ab21e4d34bb13052))
+* **rollup:** Add `preserveSymLinks: true` to rollup config ([#2840](https://github.com/johnjenkins/stencil/issues/2840)) ([647ee3d](https://github.com/johnjenkins/stencil/commit/647ee3dda486787016dab33966b3c5e53eb4dc31))
+* **rollup:** Add `preserveSymLinks: true` to rollup config ([#2840](https://github.com/johnjenkins/stencil/issues/2840)) ([57052f0](https://github.com/johnjenkins/stencil/commit/57052f03a7b297c8740ec1e6615153802d80a0ae))
+
+
+### Features
+
+* **platform:** add setPlatformHelpers() api ([2d0a535](https://github.com/johnjenkins/stencil/commit/2d0a5357fbdcb23d0880018588f24a76fc41f30b))
+
+
+
 ## 🏐 [0.0.1](https://github.com/johnjenkins/stencil/compare/v2.6.0...v0.0.1) (2021-06-03)
 
 ### Bug Fixes
