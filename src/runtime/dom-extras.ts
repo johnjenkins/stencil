@@ -1,8 +1,5 @@
 import type * as d from '../declarations';
 import { BUILD } from '@app-data';
-import { HOST_FLAGS } from '@utils';
-import { PLATFORM_FLAGS } from './runtime-constants';
-import { plt, getHostRef } from '@platform';
 import { updateFallbackSlotVisibility } from './vdom/render-slot-fallback';
 
 export const patchCloneNode = (HostElementPrototype: any) => {
@@ -43,6 +40,7 @@ export const patchPseudoShadowDom = (HostElementPrototype: any) => {
   patchSlotReplaceChildren(HostElementPrototype);
   patchSlotInnerHTML(HostElementPrototype);
   patchSlotInnerText(HostElementPrototype);
+  patchTextContent(HostElementPrototype);
 }
 
 const patchChildSlotNodes = (HostElementPrototype: any) => {
@@ -51,32 +49,18 @@ const patchChildSlotNodes = (HostElementPrototype: any) => {
       return this[n];
     }
   }
-  const childNodesFn = HostElementPrototype.__lookupGetter__('childNodes');
-  const childrenFn = HostElementPrototype.__lookupGetter__('children');
-  const childElementCountFn = HostElementPrototype.__lookupGetter__('childElementCount');
 
+  const childNodesDesc = Object.getOwnPropertyDescriptor(Node.prototype, 'childNodes');
+  if (childNodesDesc) Object.defineProperty(HostElementPrototype, '__childNodes', childNodesDesc);
+
+  let childrenDesc = Object.getOwnPropertyDescriptor(Element.prototype, 'children');
+  // on IE it's on HTMLElement.prototype
+  if (!childrenDesc) childrenDesc = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'children');
   // MockNode won't have these
-  if (childrenFn) {
-    Object.defineProperty(HostElementPrototype, '__children', {
-      get() {
-        return childrenFn.call(this);
-      }
-    });
-  }
-  if (childElementCountFn) {
-    Object.defineProperty(HostElementPrototype, '__childElementCount', {
-      get() {
-        return childElementCountFn.call(this);
-      }
-    });
-  }
-  if (childNodesFn) {
-    Object.defineProperty(HostElementPrototype, '__childNodes', {
-      get() {
-        return childNodesFn.call(this);
-      }
-    });
-  }
+  if (childrenDesc) Object.defineProperty(HostElementPrototype, '__children', childrenDesc);
+
+  const childElementCountDesc = Object.getOwnPropertyDescriptor(Element.prototype, 'childElementCount');
+  if (childElementCountDesc) Object.defineProperty(HostElementPrototype, '__childElementCount', childElementCountDesc);
 
   Object.defineProperty(HostElementPrototype, 'children', {
     get() {
@@ -91,38 +75,29 @@ const patchChildSlotNodes = (HostElementPrototype: any) => {
       return HostElementPrototype.children.length;
     },
   });
-  if (!childNodesFn) return;
+  if (!childNodesDesc) return;
 
   Object.defineProperty(HostElementPrototype, 'childNodes', {
     get() {
-      const childNodes = childNodesFn.call(this);
-      if ((plt.$flags$ & PLATFORM_FLAGS.isTmpDisconnected) === 0 && getHostRef(this).$flags$ & HOST_FLAGS.hasRendered) {
-        const result = new FakeNodeList();
-        for (let i = 0; i < childNodes.length; i++) {
-          const slot = childNodes[i]['s-nr'];
-          if (slot) {
-            result.push(slot);
-          }
+      const childNodes = this.__childNodes as d.RenderNode[];
+      const result = new FakeNodeList();
+      for (let i = 0; i < childNodes.length; i++) {
+        const slot = childNodes[i]['s-nr'];
+        if (slot) {
+          result.push(slot);
         }
-        return result;
       }
-      return FakeNodeList.from(childNodes);
+      return result;
     }
   });
 };
 
 const patchSlotInnerHTML = (HostElementPrototype: any) => {
-  const innerHTMLGetFn = HostElementPrototype.__lookupGetter__('innerHTML');
-  const innerHTMLSetFn = HostElementPrototype.__lookupSetter__('innerHTML');
-
-  Object.defineProperty(HostElementPrototype, '__innerHTML', {
-    get() {
-      return innerHTMLGetFn.call(this);
-    },
-    set(value) {
-      return innerHTMLSetFn.call(this, value);
-    }
-  });
+  let descriptor = Object.getOwnPropertyDescriptor(Element.prototype, 'innerHTML');
+  // on IE it's on HTMLElement.prototype
+  if (!descriptor) descriptor = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'innerHTML');
+  // MockNode won't have these
+  if (descriptor) Object.defineProperty(HostElementPrototype, '__innerHTML', descriptor);
 
   Object.defineProperty(HostElementPrototype, 'innerHTML', {
     get: function() {
@@ -141,23 +116,38 @@ const patchSlotInnerHTML = (HostElementPrototype: any) => {
 };
 
 const patchSlotInnerText = (HostElementPrototype: any) => {
-  const innerTextGetFn = HostElementPrototype.__lookupGetter__('innerText');
-  const innerTextSetFn = HostElementPrototype.__lookupSetter__('innerText');
-
-  Object.defineProperty(HostElementPrototype, '__innerText', {
-    get() {
-      return innerTextGetFn.call(this);
-    },
-    set(value) {
-      return innerTextSetFn.call(this, value);
-    }
-  });
+  let descriptor = Object.getOwnPropertyDescriptor(Element.prototype, 'innerText');
+  // on IE it's on HTMLElement.prototype
+  if (!descriptor) descriptor = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'innerText');
+  // MockNode won't have these
+  if (descriptor) Object.defineProperty(HostElementPrototype, '__innerText', descriptor);
 
   Object.defineProperty(HostElementPrototype, 'innerText', {
     get: function() {
-      let html = '';
-      this.childNodes.forEach((node: d.RenderNode) => html+= node.innerText || node.textContent);
-      return html;
+      let text = '';
+      this.childNodes.forEach((node: d.RenderNode) => text+= node.innerText || node.textContent.trimEnd());
+      return text;
+    },
+    set: function(value) {
+      this.childNodes.forEach((node: d.RenderNode) => {
+        if (node['s-ol']) node['s-ol'].remove();
+        node.remove();
+      });
+      this.insertAdjacentHTML('beforeend', value);
+    }
+  })
+};
+
+const patchTextContent = (HostElementPrototype: any) => {
+  const descriptor = Object.getOwnPropertyDescriptor(Node.prototype, 'textContent');
+  // MockNode won't have these
+  if (descriptor) Object.defineProperty(HostElementPrototype, '__textContent', descriptor);
+
+  Object.defineProperty(HostElementPrototype, 'textContent', {
+    get: function() {
+      let text = '';
+      this.childNodes.forEach((node: d.RenderNode) => text+= node.textContent || '');
+      return text;
     },
     set: function(value) {
       this.childNodes.forEach((node: d.RenderNode) => {
@@ -170,9 +160,9 @@ const patchSlotInnerText = (HostElementPrototype: any) => {
 };
 
 export const patchNodeRemove = (ElementPrototype: any) => {
-  if (ElementPrototype.__remove) return;
+  if (!ElementPrototype || ElementPrototype.__remove) return;
   ElementPrototype.__remove = ElementPrototype.remove || true;
-  if (document.contains(ElementPrototype.parentNode)) patchNodeRemoveChild(ElementPrototype.parentNode);
+  patchNodeRemoveChild(ElementPrototype.parentNode);
 
   ElementPrototype.remove = function(this: Element) {
     if (this.parentNode) {
@@ -183,7 +173,7 @@ export const patchNodeRemove = (ElementPrototype: any) => {
 }
 
 const patchNodeRemoveChild = (ElementPrototype: any) => {
-  if (ElementPrototype.__removeChild) return;
+  if (!ElementPrototype || ElementPrototype.__removeChild) return;
   ElementPrototype.__removeChild = ElementPrototype.removeChild;
   ElementPrototype.removeChild = function(this: d.RenderNode, toRemove: d.RenderNode) {
     if (toRemove['s-sn']) {
@@ -205,7 +195,9 @@ const patchSlotAppendChild = (HostElementPrototype: any) => {
     if (slotNode) {
       const slotPlaceholder: d.RenderNode = document.createTextNode('') as any;
       slotPlaceholder['s-nr'] = newChild;
-      ((slotNode['s-cr']).parentNode as any).__appendChild(slotPlaceholder);
+      if(slotNode['s-cr'].parentNode) {
+        (slotNode['s-cr'].parentNode as any).__appendChild(slotPlaceholder);
+      }
       newChild['s-ol'] = slotPlaceholder;
       patchNodeRemove(newChild);
 
@@ -235,7 +227,9 @@ const patchSlotPrepend = (HostElementPrototype: any) => {
       if (slotNode) {
         const slotPlaceholder: d.RenderNode = document.createTextNode('') as any;
         slotPlaceholder['s-nr'] = newChild;
-        ((slotNode['s-cr']).parentNode as any).__appendChild(slotPlaceholder);
+        if(slotNode['s-cr'].parentNode) {
+          (slotNode['s-cr'].parentNode as any).__appendChild(slotPlaceholder);
+        }
         newChild['s-ol'] = slotPlaceholder;
         patchNodeRemove(newChild);
 
