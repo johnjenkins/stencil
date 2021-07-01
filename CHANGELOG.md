@@ -1,3 +1,23 @@
+# 🚋 [2.4.0](https://github.com/johnjenkins/stencil/compare/v2.6.0...v2.4.0) (2021-07-01)
+
+
+### Bug Fixes
+
+* **@Mixin cloneNode:** re-add questionDotTokens on clone ([aa6b994](https://github.com/johnjenkins/stencil/commit/aa6b994ca550bb6d44754db3ab21e4d34bb13052))
+* **rollup:** Add `preserveSymLinks: true` to rollup config ([#2840](https://github.com/johnjenkins/stencil/issues/2840)) ([647ee3d](https://github.com/johnjenkins/stencil/commit/647ee3dda486787016dab33966b3c5e53eb4dc31))
+* **rollup:** Add `preserveSymLinks: true` to rollup config ([#2840](https://github.com/johnjenkins/stencil/issues/2840)) ([57052f0](https://github.com/johnjenkins/stencil/commit/57052f03a7b297c8740ec1e6615153802d80a0ae))
+* **slot:** apply slot polyfill patches immediately to fix external initial rendering ([e564064](https://github.com/johnjenkins/stencil/commit/e5640649886e76810c3c523af2d2e542038f6624))
+* **slot:** patched textContent when using slot polyfill ([7d85c51](https://github.com/johnjenkins/stencil/commit/7d85c5141dcb7b96a0b53f597f598f3d18b6ca13))
+* **testing:** puppeteer v10 support ([#2939](https://github.com/johnjenkins/stencil/issues/2939)) ([09afd3f](https://github.com/johnjenkins/stencil/commit/09afd3fed1ad1c294d6c1677c038287212b721d2))
+
+
+### Features
+
+* **no-node slot fallback content:** removed all <slot-fb> nodes for fallback content. ([f9a0063](https://github.com/johnjenkins/stencil/commit/f9a00632919d39886c3c950feb2c942f74ff9c8f))
+* **platform:** add setPlatformHelpers() api ([2d0a535](https://github.com/johnjenkins/stencil/commit/2d0a5357fbdcb23d0880018588f24a76fc41f30b))
+
+
+
 # 🌞 [2.0.0](https://github.com/johnjenkins/stencil/compare/v2.6.0...v2.0.0) (2021-06-30)
 
 
