@@ -1561,6 +1561,11 @@ export interface RenderNode extends HostElement {
   ['s-sn']?: string;
 
   /**
+   * Parent slot name
+   */
+  ['s-psn']?: string;
+
+  /**
    * Is a slot fallback node
    */
   ['s-sf']?: boolean;
