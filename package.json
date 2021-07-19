@@ -114,7 +114,7 @@
     "semver": "7.3.4",
     "sizzle": "^2.3.6",
     "terser": "5.6.1",
-    "ts-clone-node": "^0.3.23",
+    "ts-clone-node": "^0.3.24",
     "tslib": "^2.1.0",
     "typescript": "4.2.3",
     "webpack": "^4.46.0",

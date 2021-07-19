@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🌮 [2.5.0](https://github.com/johnjenkins/stencil/compare/v2.6.0...v2.5.0) (2021-07-15)
 
 
@@ -127,6 +128,8 @@
 * **prop get / set:** add @Prop getters / setters ([#2899](https://github.com/ionic-team/stencil/issues/2899)) 
 * **source maps:** add source maps ([#2892](https://github.com/ionic-team/stencil/issues/2892)) 
 
+=======
+>>>>>>> feat-mixin-decorator
 # 📟 [2.6.0](https://github.com/ionic-team/stencil/compare/v2.6.0-0...v2.6.0) (2021-06-02)
 
 ### Features
