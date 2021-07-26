@@ -1,6 +1,4 @@
-import { HTMLStencilElement } from '@stencil/core';
 import { setupDomTests } from '../util';
-
 
 describe('slot-nested-order', function() {
   const { setupDom, tearDownDom } = setupDomTests(document);
@@ -13,7 +11,7 @@ describe('slot-nested-order', function() {
 
 
   it('correct nested order', async () => {
-    const root = app.querySelector('slot-nested-order-parent') as HTMLStencilElement;
+    const root = app.querySelector('slot-nested-order-parent');
 
     expect(root.__textContent).toBe('123456');
 

@@ -1,4 +1,3 @@
-import { HTMLStencilElement } from '@stencil/core';
 import { setupDomTests } from '../util';
 
 describe('slot array basic', () => {
@@ -11,13 +10,13 @@ describe('slot array basic', () => {
   afterEach(tearDownDom);
 
   it('renders slotted content between header/footer', async () => {
-    let elm = app.querySelector('.results1') as HTMLStencilElement;
+    let elm = app.querySelector('.results1') as any;
     expect(elm.__children[0].nodeName.toLowerCase()).toContain('header');
     expect(elm.__children[0].textContent.trim()).toBe('Header');
     expect(elm.__children[1].nodeName.toLowerCase()).toContain('footer');
     expect(elm.__children[1].textContent.trim()).toBe('Footer');
 
-    elm = app.querySelector('.results2') as HTMLStencilElement;
+    elm = app.querySelector('.results2') as any;
     expect(elm.__children[0].nodeName.toLowerCase()).toContain('header');
     expect(elm.__children[0].textContent.trim()).toBe('Header');
     expect(elm.__children[1].nodeName.toLowerCase()).toContain('content-top');
@@ -25,7 +24,7 @@ describe('slot array basic', () => {
     expect(elm.__children[2].nodeName.toLowerCase()).toContain('footer');
     expect(elm.__children[2].textContent.trim()).toBe('Footer');
 
-    elm = app.querySelector('.results3') as HTMLStencilElement;
+    elm = app.querySelector('.results3') as any;
     expect(elm.__children[0].nodeName.toLowerCase()).toContain('header');
     expect(elm.__children[0].textContent.trim()).toBe('Header');
     expect(elm.__children[1].nodeName.toLowerCase()).toContain('content-top');
@@ -35,7 +34,7 @@ describe('slot array basic', () => {
     expect(elm.__children[3].nodeName.toLowerCase()).toContain('footer');
     expect(elm.__children[3].textContent.trim()).toBe('Footer');
 
-    elm = app.querySelector('.results4') as HTMLStencilElement;
+    elm = app.querySelector('.results4') as any;
     expect(elm.__children[0].nodeName.toLowerCase()).toContain('header');
     expect(elm.__children[0].textContent.trim()).toBe('Header');
     expect(elm.__children[1].nodeName.toLowerCase()).toContain('content-top');
