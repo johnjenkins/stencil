@@ -68,7 +68,7 @@ export const connectedCallback = (elm: d.HostElement) => {
 
       // Lazy properties
       // https://developers.google.com/web/fundamentals/web-components/best-practices#lazy-properties
-      if (BUILD.prop && BUILD.lazyLoad && !BUILD.hydrateServerSide && cmpMeta.$members$) {
+      if (BUILD.prop && !BUILD.hydrateServerSide && cmpMeta.$members$) {
         Object.entries(cmpMeta.$members$).map(([memberName, [memberFlags]]) => {
           if (memberFlags & MEMBER_FLAGS.Prop && elm.hasOwnProperty(memberName)) {
             const value = (elm as any)[memberName];
@@ -95,7 +95,7 @@ export const connectedCallback = (elm: d.HostElement) => {
       addHostEventListeners(elm, hostRef, cmpMeta.$listeners$, false);
 
       // fire off connectedCallback() on component instance
-      fireConnectedCallback(hostRef.$lazyInstance$);
+      fireConnectedCallback(hostRef.$lazyInstance$, elm);
 
       // re-add css-shim because it gets removed on disconnect
       if (plt.$cssShim$ && elm['s-sc']) {

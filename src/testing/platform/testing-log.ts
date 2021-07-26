@@ -7,7 +7,9 @@ const defaultConsoleError = (e: any) => {
   caughtErrors.push(e);
 };
 
-export const consoleError: d.ErrorHandler = (e: any, el?: any) => (customError || defaultConsoleError)(e, el);
+export const consoleError: d.ErrorHandler = (e: any, el?: any) => {
+  (customError || defaultConsoleError)(e, el);
+}
 
 export const consoleDevError = (...e: any[]) => {
   caughtErrors.push(new Error(e.join(', ')));
