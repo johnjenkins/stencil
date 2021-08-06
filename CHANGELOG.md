@@ -1,3 +1,29 @@
+## 🚞 [2.5.5](https://github.com/johnjenkins/stencil/compare/v2.7.0-0...v2.5.5) (2021-08-04)
+
+
+### Bug Fixes
+
+* **@Mixin:** stop cloning nodes in components not using @Mixin ([1bbd5a7](https://github.com/johnjenkins/stencil/commit/1bbd5a7672a0c6d1f2d104271bbd0f23b6970a37))
+* **@Mixin cloneNode:** re-add questionDotTokens on clone ([aa6b994](https://github.com/johnjenkins/stencil/commit/aa6b994ca550bb6d44754db3ab21e4d34bb13052))
+* **cloneNode:** stop stripping out questionDotTokens ([b644e76](https://github.com/johnjenkins/stencil/commit/b644e769087e32c488440ee72c2535454e6c496a))
+* **nested slots:** non-shadow nesting slots without 'slot-fb' now works ([f8e9349](https://github.com/johnjenkins/stencil/commit/f8e9349b6656f5a91f863618c4f3186fa7d93a25))
+* **nested slots:** non-shadow nesting slots without 'slot-fb' now works ([a99960a](https://github.com/johnjenkins/stencil/commit/a99960a3062bda46e3bbd107bd45b9dcf2b4250b))
+* **non-shadow slot fallback content:** added inline display when hiding to behave more akin to native shadow ([4e12078](https://github.com/johnjenkins/stencil/commit/4e120780705a4216c417fe03f468c470306dcb4b))
+* **rollup:** Add `preserveSymLinks: true` to rollup config ([#2840](https://github.com/johnjenkins/stencil/issues/2840)) ([647ee3d](https://github.com/johnjenkins/stencil/commit/647ee3dda486787016dab33966b3c5e53eb4dc31))
+* **rollup:** Add `preserveSymLinks: true` to rollup config ([#2840](https://github.com/johnjenkins/stencil/issues/2840)) ([57052f0](https://github.com/johnjenkins/stencil/commit/57052f03a7b297c8740ec1e6615153802d80a0ae))
+* **slot:** apply slot polyfill patches immediately to fix external initial rendering ([e564064](https://github.com/johnjenkins/stencil/commit/e5640649886e76810c3c523af2d2e542038f6624))
+* **slot:** patched textContent when using slot polyfill ([7d85c51](https://github.com/johnjenkins/stencil/commit/7d85c5141dcb7b96a0b53f597f598f3d18b6ca13))
+
+
+### Features
+
+* **emit error events:** emit custom event on component error within lifecycle or render ([ba5dec0](https://github.com/johnjenkins/stencil/commit/ba5dec038214d1c941f0c4070e9f74b03d270b19))
+* **loader:** inject static imports that are statically analyzable ([346d164](https://github.com/johnjenkins/stencil/commit/346d164017fd126a10fc1de15a86769e20c18814))
+* **no-node slot fallback content:** removed all <slot-fb> nodes for fallback content. ([f9a0063](https://github.com/johnjenkins/stencil/commit/f9a00632919d39886c3c950feb2c942f74ff9c8f))
+* **platform:** add setPlatformHelpers() api ([2d0a535](https://github.com/johnjenkins/stencil/commit/2d0a5357fbdcb23d0880018588f24a76fc41f30b))
+
+
+
 ## 🐎 [2.5.4](https://github.com/johnjenkins/stencil/compare/v2.7.0-0...v2.5.4) (2021-07-29)
 
 
