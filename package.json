@@ -1,6 +1,6 @@
 {
   "name": "@johnjenkins/stencil-community",
-  "version": "2.5.6",
+  "version": "2.5.7",
   "license": "MIT",
   "main": "./internal/stencil-core/index.cjs",
   "module": "./internal/stencil-core/index.js",
