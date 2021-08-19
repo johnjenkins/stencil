@@ -34,6 +34,8 @@ import type {
   VNodeData,
 } from './stencil-public-runtime';
 
+import type { SourceMap as RollupSourceMap } from 'rollup';
+
 export interface SourceMap {
   file: string;
   mappings: string;
