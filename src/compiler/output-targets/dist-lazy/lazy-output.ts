@@ -75,7 +75,7 @@ export const outputLazy = async (config: d.Config, compilerCtx: d.CompilerCtx, b
     catchError(buildCtx.diagnostics, e);
   }
 
-  timespan.finish(`${bundleEventMessage} finished`);
+  timespan.finish(`generate lazy${config.sourceMap ? ' + source maps' : ''} finished`);
 };
 
 const getLazyCustomTransformer = (config: d.Config, compilerCtx: d.CompilerCtx) => {
