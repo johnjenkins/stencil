@@ -175,7 +175,6 @@ export interface BuildConditionals extends Partial<BuildFeatures> {
   constructableCSS?: boolean;
   appendChildSlotFix?: boolean;
   slotChildNodesFix?: boolean;
-  scopedSlotTextContentFix?: boolean;
   cloneNodeFix?: boolean;
   dynamicImportShim?: boolean;
   hydratedAttribute?: boolean;
@@ -743,6 +742,7 @@ export interface ComponentCompilerMeta extends ComponentCompilerFeatures {
   internal: boolean;
   legacyConnect: ComponentCompilerLegacyConnect[];
   legacyContext: ComponentCompilerLegacyContext[];
+  mixinFilePaths: string[];
 
   dependencies?: string[];
   dependents?: string[];
@@ -1430,6 +1430,7 @@ export interface Module {
   staticSourceFileText: string;
   sourceMapPath: string;
   sourceMapFileText: string;
+  mixinFilePaths: string[];
 
   // build features
   hasVdomAttribute: boolean;

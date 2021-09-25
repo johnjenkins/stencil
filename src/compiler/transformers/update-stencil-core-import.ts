@@ -22,7 +22,10 @@ export const updateStencilCoreImports = (updatedCoreImportPath: string): ts.Tran
               ) {
                 const origImports = s.importClause.namedBindings.elements;
 
-                const keepImports = origImports.map((e) => e.getText()).filter((name) => KEEP_IMPORTS.has(name));
+                const keepImports = origImports.filter((e) => {
+                  const name = e.propertyName?.text || e.name.text;
+                  return KEEP_IMPORTS.has(name);
+                });
 
                 if (keepImports.length > 0) {
                   const newImport = ts.updateImportDeclaration(
@@ -32,7 +35,7 @@ export const updateStencilCoreImports = (updatedCoreImportPath: string): ts.Tran
                     ts.createImportClause(
                       undefined,
                       ts.createNamedImports(
-                        keepImports.map((name) => ts.createImportSpecifier(undefined, ts.createIdentifier(name)))
+                        keepImports.map((ims) => ts.createImportSpecifier(ims.propertyName, ims.name))
                       )
                     ),
                     ts.createStringLiteral(updatedCoreImportPath)

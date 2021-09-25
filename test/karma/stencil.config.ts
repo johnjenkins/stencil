@@ -31,7 +31,6 @@ export const config: Config = {
     dynamicImportShim: true,
     lifecycleDOMEvents: true,
     safari10: true,
-    scopedSlotTextContentFix: true,
     scriptDataOpts: true,
     shadowDomShim: true,
   },

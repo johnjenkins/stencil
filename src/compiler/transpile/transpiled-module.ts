@@ -42,4 +42,5 @@ export const createModule = (
   potentialCmpRefs: [],
   sourceMapPath: null,
   sourceMapFileText: null,
+  mixinFilePaths: [],
 });

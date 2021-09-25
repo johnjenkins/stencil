@@ -146,10 +146,6 @@ export const bootstrapLazy = (lazyBundles: d.LazyBundlesRuntimeData, options: d.
         };
       }
 
-      if (BUILD.scopedSlotTextContentFix) {
-        patchTextContent(HostElement.prototype, cmpMeta);
-      }
-
       cmpMeta.$lazyBundleId$ = lazyBundle[0];
 
       if (!exclude.includes(tagName) && !customElements.get(tagName)) {

@@ -105,6 +105,7 @@ export const getModuleLegacy = (_config: d.Config, compilerCtx: d.CompilerCtx, s
       staticSourceFileText: '',
       sourceMapPath: null,
       sourceMapFileText: null,
+      mixinFilePaths: [],
     };
     compilerCtx.moduleMap.set(sourceFilePath, moduleFile);
     return moduleFile;
