@@ -6,7 +6,8 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { CarData } from "./car-list/car-data";
-import { AnimationBuilder, Color, RouterDirection } from "../node_modules/ionic-git/core/src/interface.d";
+import { AnimationBuilder, Color, RouterDirection, RouterEventDetail } from "../node_modules/ionic-git/core/src/interface.d";
+import { NavigationHookCallback } from "../node_modules/ionic-git/core/src/components/route/route-interface";
 import { Title } from "./mixin-cmp/interfaces";
 export namespace Components {
     interface AppRoot {
@@ -36,6 +37,117 @@ export namespace Components {
         "methodThatFiresMyWindowEvent": (value: number) => Promise<void>;
     }
     interface ImportAssets {
+    }
+    interface IonButton {
+        /**
+          * The type of button.
+         */
+        "buttonType": string;
+        /**
+          * The color to use from your application's color palette. Default options are: `"primary"`, `"secondary"`, `"tertiary"`, `"success"`, `"warning"`, `"danger"`, `"light"`, `"medium"`, and `"dark"`. For more information on colors, see [theming](/docs/theming/basics).
+         */
+        "color"?: Color;
+        /**
+          * If `true`, the user cannot interact with the button.
+         */
+        "disabled": boolean;
+        /**
+          * This attribute instructs browsers to download a URL instead of navigating to it, so the user will be prompted to save it as a local file. If the attribute has a value, it is used as the pre-filled file name in the Save prompt (the user can still change the file name if they want).
+         */
+        "download": string | undefined;
+        /**
+          * Set to `"block"` for a full-width button or to `"full"` for a full-width button without left and right borders.
+         */
+        "expand"?: 'full' | 'block';
+        /**
+          * Set to `"clear"` for a transparent button, to `"outline"` for a transparent button with a border, or to `"solid"`. The default style is `"solid"` except inside of a toolbar, where the default is `"clear"`.
+         */
+        "fill"?: 'clear' | 'outline' | 'solid' | 'default';
+        /**
+          * Contains a URL or a URL fragment that the hyperlink points to. If this property is set, an anchor tag will be rendered.
+         */
+        "href": string | undefined;
+        /**
+          * The mode determines which platform styles to use.
+         */
+        "mode"?: "ios" | "md";
+        /**
+          * Specifies the relationship of the target object to the link object. The value is a space-separated list of [link types](https://developer.mozilla.org/en-US/docs/Web/HTML/Link_types).
+         */
+        "rel": string | undefined;
+        /**
+          * When using a router, it specifies the transition animation when navigating to another page using `href`.
+         */
+        "routerAnimation": AnimationBuilder | undefined;
+        /**
+          * When using a router, it specifies the transition direction when navigating to another page using `href`.
+         */
+        "routerDirection": RouterDirection;
+        /**
+          * The button shape.
+         */
+        "shape"?: 'round';
+        /**
+          * The button size.
+         */
+        "size"?: 'small' | 'default' | 'large';
+        /**
+          * If `true`, activates a button with a heavier font weight.
+         */
+        "strong": boolean;
+        /**
+          * Specifies where to display the linked URL. Only applies when an `href` is provided. Special keywords: `"_blank"`, `"_self"`, `"_parent"`, `"_top"`.
+         */
+        "target": string | undefined;
+        /**
+          * The type of the button.
+         */
+        "type": 'submit' | 'reset' | 'button';
+    }
+    interface IonRoute {
+        /**
+          * A navigation hook that is fired when the route tries to enter. Returning `true` allows the navigation to proceed, while returning `false` causes it to be cancelled. Returning a `NavigationHookOptions` object causes the router to redirect to the path specified.
+         */
+        "beforeEnter"?: NavigationHookCallback;
+        /**
+          * A navigation hook that is fired when the route tries to leave. Returning `true` allows the navigation to proceed, while returning `false` causes it to be cancelled. Returning a `NavigationHookOptions` object causes the router to redirect to the path specified.
+         */
+        "beforeLeave"?: NavigationHookCallback;
+        /**
+          * Name of the component to load/select in the navigation outlet (`ion-tabs`, `ion-nav`) when the route matches.  The value of this property is not always the tagname of the component to load, in `ion-tabs` it actually refers to the name of the `ion-tab` to select.
+         */
+        "component": string;
+        /**
+          * A key value `{ 'red': true, 'blue': 'white'}` containing props that should be passed to the defined component when rendered.
+         */
+        "componentProps"?: {[key: string]: any};
+        /**
+          * Relative path that needs to match in order for this route to apply.  Accepts paths similar to expressjs so that you can define parameters in the url /foo/:bar where bar would be available in incoming props.
+         */
+        "url": string;
+    }
+    interface IonRouter {
+        /**
+          * Go back to previous page in the window.history.
+         */
+        "back": () => Promise<void>;
+        "canTransition": () => Promise<string | boolean>;
+        "navChanged": (direction: RouterDirection) => Promise<boolean>;
+        "printDebug": () => Promise<void>;
+        /**
+          * Navigate to the specified URL.
+          * @param url The url to navigate to.
+          * @param direction The direction of the animation. Defaults to `"forward"`.
+         */
+        "push": (url: string, direction?: RouterDirection, animation?: AnimationBuilder) => Promise<boolean>;
+        /**
+          * The root path to use when matching URLs. By default, this is set to "/", but you can specify an alternate prefix for all URL paths.
+         */
+        "root": string;
+        /**
+          * The router can work in two "modes": - With hash: `/index.html#/path/to/page` - Without hash: `/path/to/page`  Using one or another might depend in the requirements of your app and/or where it's deployed.  Usually "hash-less" navigation works better for SEO and it's more user friendly too, but it might requires additional server-side configuration in order to properly work.  On the other side hash-navigation is much easier to deploy, it even works over the file protocol.  By default, this property is `true`, change to `false` to allow hash-less URLs.
+         */
+        "useHash": boolean;
     }
     interface ListenCmp {
         "opened": boolean;
@@ -207,6 +319,24 @@ declare global {
         prototype: HTMLImportAssetsElement;
         new (): HTMLImportAssetsElement;
     };
+    interface HTMLIonButtonElement extends Components.IonButton, HTMLStencilElement {
+    }
+    var HTMLIonButtonElement: {
+        prototype: HTMLIonButtonElement;
+        new (): HTMLIonButtonElement;
+    };
+    interface HTMLIonRouteElement extends Components.IonRoute, HTMLStencilElement {
+    }
+    var HTMLIonRouteElement: {
+        prototype: HTMLIonRouteElement;
+        new (): HTMLIonRouteElement;
+    };
+    interface HTMLIonRouterElement extends Components.IonRouter, HTMLStencilElement {
+    }
+    var HTMLIonRouterElement: {
+        prototype: HTMLIonRouterElement;
+        new (): HTMLIonRouterElement;
+    };
     interface HTMLListenCmpElement extends Components.ListenCmp, HTMLStencilElement {
     }
     var HTMLListenCmpElement: {
@@ -285,6 +415,9 @@ declare global {
         "env-data": HTMLEnvDataElement;
         "event-cmp": HTMLEventCmpElement;
         "import-assets": HTMLImportAssetsElement;
+        "ion-button": HTMLIonButtonElement;
+        "ion-route": HTMLIonRouteElement;
+        "ion-router": HTMLIonRouterElement;
         "listen-cmp": HTMLListenCmpElement;
         "method-cmp": HTMLMethodCmpElement;
         "mixed-in-cmp": HTMLMixedInCmpElement;
@@ -327,6 +460,124 @@ declare namespace LocalJSX {
         "onMyWindowEvent"?: (event: CustomEvent<number>) => void;
     }
     interface ImportAssets {
+    }
+    interface IonButton {
+        /**
+          * The type of button.
+         */
+        "buttonType"?: string;
+        /**
+          * The color to use from your application's color palette. Default options are: `"primary"`, `"secondary"`, `"tertiary"`, `"success"`, `"warning"`, `"danger"`, `"light"`, `"medium"`, and `"dark"`. For more information on colors, see [theming](/docs/theming/basics).
+         */
+        "color"?: Color;
+        /**
+          * If `true`, the user cannot interact with the button.
+         */
+        "disabled"?: boolean;
+        /**
+          * This attribute instructs browsers to download a URL instead of navigating to it, so the user will be prompted to save it as a local file. If the attribute has a value, it is used as the pre-filled file name in the Save prompt (the user can still change the file name if they want).
+         */
+        "download"?: string | undefined;
+        /**
+          * Set to `"block"` for a full-width button or to `"full"` for a full-width button without left and right borders.
+         */
+        "expand"?: 'full' | 'block';
+        /**
+          * Set to `"clear"` for a transparent button, to `"outline"` for a transparent button with a border, or to `"solid"`. The default style is `"solid"` except inside of a toolbar, where the default is `"clear"`.
+         */
+        "fill"?: 'clear' | 'outline' | 'solid' | 'default';
+        /**
+          * Contains a URL or a URL fragment that the hyperlink points to. If this property is set, an anchor tag will be rendered.
+         */
+        "href"?: string | undefined;
+        /**
+          * The mode determines which platform styles to use.
+         */
+        "mode"?: "ios" | "md";
+        /**
+          * Emitted when the button loses focus.
+         */
+        "onIonBlur"?: (event: CustomEvent<void>) => void;
+        /**
+          * Emitted when the button has focus.
+         */
+        "onIonFocus"?: (event: CustomEvent<void>) => void;
+        /**
+          * Specifies the relationship of the target object to the link object. The value is a space-separated list of [link types](https://developer.mozilla.org/en-US/docs/Web/HTML/Link_types).
+         */
+        "rel"?: string | undefined;
+        /**
+          * When using a router, it specifies the transition animation when navigating to another page using `href`.
+         */
+        "routerAnimation"?: AnimationBuilder | undefined;
+        /**
+          * When using a router, it specifies the transition direction when navigating to another page using `href`.
+         */
+        "routerDirection"?: RouterDirection;
+        /**
+          * The button shape.
+         */
+        "shape"?: 'round';
+        /**
+          * The button size.
+         */
+        "size"?: 'small' | 'default' | 'large';
+        /**
+          * If `true`, activates a button with a heavier font weight.
+         */
+        "strong"?: boolean;
+        /**
+          * Specifies where to display the linked URL. Only applies when an `href` is provided. Special keywords: `"_blank"`, `"_self"`, `"_parent"`, `"_top"`.
+         */
+        "target"?: string | undefined;
+        /**
+          * The type of the button.
+         */
+        "type"?: 'submit' | 'reset' | 'button';
+    }
+    interface IonRoute {
+        /**
+          * A navigation hook that is fired when the route tries to enter. Returning `true` allows the navigation to proceed, while returning `false` causes it to be cancelled. Returning a `NavigationHookOptions` object causes the router to redirect to the path specified.
+         */
+        "beforeEnter"?: NavigationHookCallback;
+        /**
+          * A navigation hook that is fired when the route tries to leave. Returning `true` allows the navigation to proceed, while returning `false` causes it to be cancelled. Returning a `NavigationHookOptions` object causes the router to redirect to the path specified.
+         */
+        "beforeLeave"?: NavigationHookCallback;
+        /**
+          * Name of the component to load/select in the navigation outlet (`ion-tabs`, `ion-nav`) when the route matches.  The value of this property is not always the tagname of the component to load, in `ion-tabs` it actually refers to the name of the `ion-tab` to select.
+         */
+        "component": string;
+        /**
+          * A key value `{ 'red': true, 'blue': 'white'}` containing props that should be passed to the defined component when rendered.
+         */
+        "componentProps"?: {[key: string]: any};
+        /**
+          * Used internally by `ion-router` to know when this route did change.
+         */
+        "onIonRouteDataChanged"?: (event: CustomEvent<any>) => void;
+        /**
+          * Relative path that needs to match in order for this route to apply.  Accepts paths similar to expressjs so that you can define parameters in the url /foo/:bar where bar would be available in incoming props.
+         */
+        "url"?: string;
+    }
+    interface IonRouter {
+        /**
+          * Emitted when the route had changed
+         */
+        "onIonRouteDidChange"?: (event: CustomEvent<RouterEventDetail>) => void;
+        /**
+          * Event emitted when the route is about to change
+         */
+        "onIonRouteWillChange"?: (event: CustomEvent<RouterEventDetail>) => void;
+        /**
+          * The root path to use when matching URLs. By default, this is set to "/", but you can specify an alternate prefix for all URL paths.
+         */
+        "root"?: string;
+        /**
+          * The router can work in two "modes": - With hash: `/index.html#/path/to/page` - Without hash: `/path/to/page`  Using one or another might depend in the requirements of your app and/or where it's deployed.  Usually "hash-less" navigation works better for SEO and it's more user friendly too, but it might requires additional server-side configuration in order to properly work.  On the other side hash-navigation is much easier to deploy, it even works over the file protocol.  By default, this property is `true`, change to `false` to allow hash-less URLs.
+         */
+        "useHash"?: boolean;
     }
     interface ListenCmp {
         "opened"?: boolean;
@@ -447,6 +698,9 @@ declare namespace LocalJSX {
         "env-data": EnvData;
         "event-cmp": EventCmp;
         "import-assets": ImportAssets;
+        "ion-button": IonButton;
+        "ion-route": IonRoute;
+        "ion-router": IonRouter;
         "listen-cmp": ListenCmp;
         "method-cmp": MethodCmp;
         "mixed-in-cmp": MixedInCmp;
@@ -475,6 +729,9 @@ declare module "@stencil/core" {
             "env-data": LocalJSX.EnvData & JSXBase.HTMLAttributes<HTMLEnvDataElement>;
             "event-cmp": LocalJSX.EventCmp & JSXBase.HTMLAttributes<HTMLEventCmpElement>;
             "import-assets": LocalJSX.ImportAssets & JSXBase.HTMLAttributes<HTMLImportAssetsElement>;
+            "ion-button": LocalJSX.IonButton & JSXBase.HTMLAttributes<HTMLIonButtonElement>;
+            "ion-route": LocalJSX.IonRoute & JSXBase.HTMLAttributes<HTMLIonRouteElement>;
+            "ion-router": LocalJSX.IonRouter & JSXBase.HTMLAttributes<HTMLIonRouterElement>;
             "listen-cmp": LocalJSX.ListenCmp & JSXBase.HTMLAttributes<HTMLListenCmpElement>;
             "method-cmp": LocalJSX.MethodCmp & JSXBase.HTMLAttributes<HTMLMethodCmpElement>;
             "mixed-in-cmp": LocalJSX.MixedInCmp & JSXBase.HTMLAttributes<HTMLMixedInCmpElement>;
