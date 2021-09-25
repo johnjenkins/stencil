@@ -103,9 +103,6 @@ export const connectedCallback = (elm: d.HostElement) => {
       // since they would have been removed when disconnected
       addHostEventListeners(elm, hostRef, cmpMeta.$listeners$, false);
 
-      // fire off connectedCallback() on component instance
-      fireConnectedCallback(hostRef.$lazyInstance$);
-
       // re-add css-shim because it gets removed on disconnect
       if (plt.$cssShim$ && elm['s-sc']) {
         // setup
@@ -131,6 +128,9 @@ export const connectedCallback = (elm: d.HostElement) => {
         });
         plt.$cssShim$.updateHost(elm);
       }
+
+      // fire off connectedCallback() on component instance
+      fireConnectedCallback(hostRef.$lazyInstance$, elm);
     }
 
     endConnected();
