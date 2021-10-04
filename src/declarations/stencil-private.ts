@@ -1444,7 +1444,7 @@ export interface Plugin {
 
 export interface PluginTransformResults {
   code?: string;
-  map?: string;
+  map?: SourceMap;
   id?: string;
   diagnostics?: Diagnostic[];
   dependencies?: string[];
