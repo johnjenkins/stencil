@@ -1,3 +1,39 @@
+## 🏔 [2.5.10](https://github.com/ionic-team/stencil/compare/v2.8.1...v2.5.10) (2021-10-06)
+
+
+### Bug Fixes
+
+* use component class name consistently when defining elements ([da15e5a](https://github.com/ionic-team/stencil/commit/da15e5a405879ed9899f603c4fd341bdfdf5345a))
+* **@Mixin:** stop cloning nodes in components not using @Mixin ([6d17285](https://github.com/ionic-team/stencil/commit/6d17285db05688062df5c811221d2c19e7d55a7f))
+* **@Mixin:** stop cloning nodes in components not using @Mixin ([1bbd5a7](https://github.com/ionic-team/stencil/commit/1bbd5a7672a0c6d1f2d104271bbd0f23b6970a37))
+* **cloneNode:** stop stripping out questionDotTokens ([39e4fe3](https://github.com/ionic-team/stencil/commit/39e4fe3e7f5e39c857273f6669b5cff9beb9fe72))
+* **cloneNode:** stop stripping out questionDotTokens ([b644e76](https://github.com/ionic-team/stencil/commit/b644e769087e32c488440ee72c2535454e6c496a))
+* **nested slots:** non-shadow nesting slots without 'slot-fb' now works ([ce4c994](https://github.com/ionic-team/stencil/commit/ce4c994c3d8d37de5919b685d035ecbf407c59a9))
+* **nested slots:** non-shadow nesting slots without 'slot-fb' now works ([f8e9349](https://github.com/ionic-team/stencil/commit/f8e9349b6656f5a91f863618c4f3186fa7d93a25))
+* **non-shadow slot fallback content:** added inline display when hiding to behave more akin to native shadow ([d9266d5](https://github.com/ionic-team/stencil/commit/d9266d5c0cd5cfc8e67645e6d63e29bc0384d45f))
+* **non-shadow slot fallback content:** added inline display when hiding to behave more akin to native shadow ([4e12078](https://github.com/ionic-team/stencil/commit/4e120780705a4216c417fe03f468c470306dcb4b))
+* **slot:** apply slot polyfill patches immediately to fix external initial rendering ([c74ca63](https://github.com/ionic-team/stencil/commit/c74ca6315fcc035d1deb1fa6817a05f47eddef60))
+* **slot:** apply slot polyfill patches immediately to fix external initial rendering ([e564064](https://github.com/ionic-team/stencil/commit/e5640649886e76810c3c523af2d2e542038f6624))
+* **slot:** patched textContent when using slot polyfill ([ff2e5f2](https://github.com/ionic-team/stencil/commit/ff2e5f289bd1395e4ead264ef86fab4eba41f260))
+* **slot:** patched textContent when using slot polyfill ([7d85c51](https://github.com/ionic-team/stencil/commit/7d85c5141dcb7b96a0b53f597f598f3d18b6ca13))
+
+
+### Features
+
+* **custom-elements-bundle:** added `defineCustomElements` to every component - will bootstrap components and any dependents ([21d920d](https://github.com/ionic-team/stencil/commit/21d920d57ce4e458c7106f01c89c63e47c4b210a))
+* **custom-elements-bundle:** make components bootstrap themselves ([634bbfc](https://github.com/ionic-team/stencil/commit/634bbfc14db03eef097160c7c533ae7410db91be))
+* **dist-custom-elements-import:** add dependencies import & definition ([778be48](https://github.com/ionic-team/stencil/commit/778be4866e3592f45b4fedeb42b2eecc5392f5e8))
+* **emit error events:** emit custom event on component error within lifecycle or render ([15fa80e](https://github.com/ionic-team/stencil/commit/15fa80e4d434acc0db1337e6889a0afb47f08713))
+* **emit error events:** emit custom event on component error within lifecycle or render ([ba5dec0](https://github.com/ionic-team/stencil/commit/ba5dec038214d1c941f0c4070e9f74b03d270b19))
+* **loader:** inject static imports that are statically analyzable ([f8a8456](https://github.com/ionic-team/stencil/commit/f8a8456cfc9d01a402ba19697158c417422fc58c))
+* **loader:** inject static imports that are statically analyzable ([346d164](https://github.com/ionic-team/stencil/commit/346d164017fd126a10fc1de15a86769e20c18814))
+* **no-node slot fallback content:** removed all <slot-fb> nodes for fallback content. ([0225d29](https://github.com/ionic-team/stencil/commit/0225d297fdaae077526c4fd568600869b3b615c6))
+* **no-node slot fallback content:** removed all <slot-fb> nodes for fallback content. ([f9a0063](https://github.com/ionic-team/stencil/commit/f9a00632919d39886c3c950feb2c942f74ff9c8f))
+* **platform:** add setPlatformHelpers() api ([26b56bb](https://github.com/ionic-team/stencil/commit/26b56bbe5a629579a1c509587f3daf6baba43b73))
+* **platform:** add setPlatformHelpers() api ([2d0a535](https://github.com/ionic-team/stencil/commit/2d0a5357fbdcb23d0880018588f24a76fc41f30b))
+
+
+
 ## 🏒 [2.5.9](https://github.com/ionic-team/stencil/compare/v2.8.1...v2.5.9) (2021-09-25)
 
 
