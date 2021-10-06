@@ -6,10 +6,11 @@ import { minifyCss } from './minify-css';
 export const optimizeCss = async (inputOpts: OptimizeCssInput) => {
   let result: OptimizeCssOutput = {
     output: inputOpts.input,
+    map: inputOpts.map,
     diagnostics: [],
   };
   if (inputOpts.autoprefixer !== false && inputOpts.autoprefixer !== null) {
-    result = await autoprefixCss(inputOpts.input, inputOpts.autoprefixer);
+    result = await autoprefixCss(inputOpts.input, inputOpts.autoprefixer, inputOpts.map);
     if (hasError(result.diagnostics)) {
       return result;
     }

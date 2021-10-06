@@ -46,6 +46,9 @@ export const extTransformsPlugin = (
               collectionDirs.map(async (outputTarget) => {
                 const collectionPath = join(outputTarget.collectionDir, relPath);
                 await compilerCtx.fs.writeFile(collectionPath, pluginTransforms.code);
+                if (config.sourceMap && pluginTransforms.code) {
+                  await compilerCtx.fs.writeFile(collectionPath + '.map', JSON.stringify(pluginTransforms.map));
+                }
               })
             );
           }
@@ -54,6 +57,7 @@ export const extTransformsPlugin = (
         const cssTransformResults = await compilerCtx.worker.transformCssToEsm({
           file: pluginTransforms.id,
           input: pluginTransforms.code,
+          map: pluginTransforms.map,
           tag: data.tag,
           encapsulation: data.encapsulation,
           mode: data.mode,

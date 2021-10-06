@@ -1,6 +1,6 @@
 import type * as d from '../../declarations';
 import { basename, relative } from 'path';
-import { buildError, catchError, isFunction, isString } from '@utils';
+import { buildError, catchError, isFunction, isObject, isString } from '@utils';
 import { isOutputTargetDocs } from '../output-targets/output-utils';
 import { parseCssImports } from '../style/css-imports';
 import { PluginCtx, PluginTransformResults } from '../../declarations';
@@ -239,6 +239,9 @@ export const runPluginTransformsEsmImports = async (
               }
               if (isString(pluginTransformResults.id)) {
                 transformResults.id = pluginTransformResults.id;
+              }
+              if (isObject(pluginTransformResults.map)) {
+                transformResults.map = pluginTransformResults.map;
               }
               if (Array.isArray(pluginTransformResults.dependencies)) {
                 const imports = pluginTransformResults.dependencies.filter(
