@@ -1,5 +1,6 @@
 import type { JsonDocs } from './stencil-public-docs';
-import type { PrerenderUrlResults } from '../internal';
+import type { PrerenderUrlResults, SourceMap } from '../internal';
+import { Options as AutoprefixerOpts } from 'autoprefixer';
 export * from './stencil-public-docs';
 
 /**
@@ -2185,8 +2186,9 @@ export interface PrerenderResults {
 
 export interface OptimizeCssInput {
   input: string;
+  map?: SourceMap;
   filePath?: string;
-  autoprefixer?: any;
+  autoprefixer?: AutoprefixerOpts;
   minify?: boolean;
   sourceMap?: boolean;
   resolveUrl?: (url: string) => Promise<string> | string;
@@ -2194,6 +2196,7 @@ export interface OptimizeCssInput {
 
 export interface OptimizeCssOutput {
   output: string;
+  map?: SourceMap;
   diagnostics: Diagnostic[];
 }
 

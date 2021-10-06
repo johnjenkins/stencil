@@ -15,6 +15,7 @@ export const transformCssToEsm = async (input: d.TransformCssToEsmInput) => {
   const optimizeResults = await optimizeCss({
     autoprefixer: input.autoprefixer,
     input: results.styleText,
+    map: results.map,
     filePath: input.file,
     minify: true,
     sourceMap: input.sourceMap,

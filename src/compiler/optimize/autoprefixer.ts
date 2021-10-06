@@ -1,11 +1,14 @@
 import type * as d from '../../declarations';
 import { IS_NODE_ENV, requireFunc } from '../sys/environment';
+import type { Options as AutoprefixerOpts } from 'autoprefixer';
+import type { ProcessOptions as PostCSSOpts, Result as PostCSSResult } from 'postcss';
 
 let cssProcessor: any;
 
-export const autoprefixCss = async (cssText: string, opts: any) => {
+export const autoprefixCss = async (cssText: string, opts: AutoprefixerOpts, map?: d.SourceMap) => {
   const output: d.OptimizeCssOutput = {
     output: cssText,
+    map: map,
     diagnostics: [],
   };
   if (!IS_NODE_ENV) {
@@ -16,7 +19,7 @@ export const autoprefixCss = async (cssText: string, opts: any) => {
     const autoprefixerOpts = opts != null && typeof opts === 'object' ? opts : DEFAULT_AUTOPREFIX_LEGACY;
 
     const processor = getProcessor(autoprefixerOpts);
-    const result = await processor.process(cssText, { map: null });
+    const result: PostCSSResult = await processor.process(cssText, ({map: {prev: map}} as PostCSSOpts));
 
     result.warnings().forEach((warning: any) => {
       output.diagnostics.push({
@@ -28,6 +31,7 @@ export const autoprefixCss = async (cssText: string, opts: any) => {
     });
 
     output.output = result.css;
+    output.map = result.map.toJSON() as unknown as d.SourceMap;
   } catch (e) {
     const diagnostic: d.Diagnostic = {
       header: `Autoprefix CSS`,

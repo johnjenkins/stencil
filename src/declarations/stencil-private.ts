@@ -1967,6 +1967,7 @@ export interface CssToEsmImportData {
 
 export interface TransformCssToEsmInput {
   input: string;
+  map?: SourceMap;
   module?: 'cjs' | 'esm' | string;
   file?: string;
   tag?: string;
