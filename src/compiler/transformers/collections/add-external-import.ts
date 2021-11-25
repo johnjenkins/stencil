@@ -1,8 +1,8 @@
 import type * as d from '../../../declarations';
-import { dirname } from 'path';
+import { dirname, join, sep } from 'path';
 import { isString, parsePackageJson } from '@utils';
 import { parseCollection } from './parse-collection-module';
-import { tsResolveModuleNamePackageJsonPath } from '../../sys/typescript/typescript-resolve-module';
+import { tsResolveModuleNamePackageJsonPath, tsResolveModuleName } from '../../sys/typescript/typescript-resolve-module';
 
 export const addExternalImport = (
   config: d.Config,
@@ -17,6 +17,8 @@ export const addExternalImport = (
     moduleFile.externalImports.push(moduleId);
     moduleFile.externalImports.sort();
   }
+  let isSymLink = false;
+  console.log('checking!', moduleId)
 
   if (!resolveCollections || compilerCtx.resolvedCollections.has(moduleId)) {
     // we've already handled this collection moduleId before
@@ -24,9 +26,21 @@ export const addExternalImport = (
   }
 
   let pkgJsonFilePath = tsResolveModuleNamePackageJsonPath(config, compilerCtx, moduleId, containingFile);
+  console.log(pkgJsonFilePath, moduleId, '???');
 
   // cache that we've already parsed this
-  compilerCtx.resolvedCollections.add(moduleId);
+  // compilerCtx.resolvedCollections.add(moduleId);
+
+  const module = tsResolveModuleName(config, compilerCtx, moduleId, containingFile);
+  // we got ourselves a symlink! Add it to our local imports for hmr and such
+  if (
+    module.resolvedModule.originalPath &&
+    typeof module.resolvedModule.originalPath === 'string' &&
+    module.resolvedModule.resolvedFileName !== module.resolvedModule.originalPath
+  ) {
+    isSymLink = true;
+    moduleFile.localImports.push(module.resolvedModule.originalPath);
+  }
 
   if (pkgJsonFilePath == null) {
     return;
@@ -89,8 +103,23 @@ export const addExternalImport = (
     return;
   }
 
+  // if (collection.moduleFiles && collection.moduleFiles.length && isSymLink) {
+
+  //   moduleFile.localImports.push(...collection.moduleFiles.map(mod => {
+  //     const pathParts = mod.jsFilePath.split(sep);
+  //     const partIndex = pathParts.findIndex(part => part === parsedPkgJson.data.name);
+
+  //     return join(
+  //       (module.resolvedModule.originalPath as string).split(parsedPkgJson.data.name)[0],
+  //       join(...pathParts.slice(partIndex))
+  //     )
+  //   }));
+  // }
+
+  // console.log('new collection!')
+
   // let's add the collection to the build context
-  buildCtx.collections.push(collection);
+  // buildCtx.collections.push(collection);
 
   if (Array.isArray(collection.dependencies)) {
     // this collection has more collections

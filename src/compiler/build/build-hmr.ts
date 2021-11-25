@@ -28,7 +28,9 @@ export const generateHmr = (config: d.Config, compilerCtx: d.CompilerCtx, buildC
     hmr.excludeHmr = excludeHmr.slice();
   }
 
-  if (buildCtx.hasHtmlChanges) {
+  console.log('global', config.globalScript, buildCtx.filesChanged);
+
+  if (buildCtx.hasHtmlChanges || buildCtx.filesChanged.includes(config.globalScript)) {
     hmr.indexHtmlUpdated = true;
   }
 
@@ -39,6 +41,9 @@ export const generateHmr = (config: d.Config, compilerCtx: d.CompilerCtx, buildC
   const outputTargetsWww = config.outputTargets.filter(isOutputTargetWww);
 
   const componentsUpdated = getComponentsUpdated(compilerCtx, buildCtx);
+
+  console.log('CHANGE', componentsUpdated)
+
   if (componentsUpdated) {
     hmr.componentsUpdated = componentsUpdated;
   }
@@ -70,14 +75,22 @@ export const generateHmr = (config: d.Config, compilerCtx: d.CompilerCtx, buildC
 };
 
 const getComponentsUpdated = (compilerCtx: d.CompilerCtx, buildCtx: d.BuildCtx) => {
+  console.log('Hello! A file changed?', buildCtx.filesChanged)
   // find all of the components that would be affected from the file changes
   if (!buildCtx.filesChanged) {
     return null;
   }
 
-  const filesToLookForImporters = buildCtx.filesChanged.filter((f) => {
+  let filesToLookForImporters = buildCtx.filesChanged.filter((f) => {
     return f.endsWith('.ts') || f.endsWith('.tsx') || f.endsWith('.js') || f.endsWith('.jsx');
   });
+
+  filesToLookForImporters = filesToLookForImporters.map(file => {
+    if (file === '/Users/John.Jenkins/projects/lerna-repo/packages/pkg1/node_modules/pkg2/dist/collection/components/pkg2-component/pkg2-component.js') {
+      return '/Users/John.Jenkins/projects/lerna-repo/packages/pkg2/dist/collection/components/pkg2-component/pkg2-component.js'
+    }
+    return file;
+  })
 
   if (filesToLookForImporters.length === 0) {
     return null;
@@ -86,6 +99,11 @@ const getComponentsUpdated = (compilerCtx: d.CompilerCtx, buildCtx: d.BuildCtx) 
   const changedScriptFiles: string[] = [];
   const checkedFiles = new Set<string>();
   const allModuleFiles = buildCtx.moduleFiles.filter((m) => m.localImports && m.localImports.length > 0);
+
+  console.log(`
+  ALL the mod file
+  `, allModuleFiles.map(mod => mod.jsFilePath), `
+  `);
 
   while (filesToLookForImporters.length > 0) {
     const scriptFile = filesToLookForImporters.shift();
@@ -113,6 +131,15 @@ const getComponentsUpdated = (compilerCtx: d.CompilerCtx, buildCtx: d.BuildCtx) 
   return tags.sort();
 };
 
+/**
+ *
+ * @param allModuleFiles
+ * @param filesToLookForImporters
+ * @param checkedFiles
+ * @param changedScriptFiles
+ * @param scriptFile
+ * @returns
+ */
 const addTsFileImporters = (
   allModuleFiles: d.Module[],
   filesToLookForImporters: string[],
@@ -135,6 +162,8 @@ const addTsFileImporters = (
   const tsFilesThatImportsThisTsFile = allModuleFiles.reduce((arr, moduleFile) => {
     moduleFile.localImports.forEach((localImport) => {
       let checkFile = localImport;
+
+      console.log('I AM LOOKING FOR', scriptFile, 'IN', checkFile)
 
       if (checkFile === scriptFile) {
         arr.push(moduleFile.sourceFilePath);
@@ -161,6 +190,8 @@ const addTsFileImporters = (
     });
     return arr;
   }, [] as string[]);
+
+  // console.log('I found a change in', tsFilesThatImportsThisTsFile)
 
   // add all the files that import this ts file to the list of ts files we need to look through
   tsFilesThatImportsThisTsFile.forEach((tsFileThatImportsThisTsFile) => {

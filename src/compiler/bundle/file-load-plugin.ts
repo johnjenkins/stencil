@@ -11,7 +11,8 @@ export const fileLoadPlugin = (fs: d.InMemoryFileSystem): Plugin => {
       if (id.endsWith('.d.ts')) {
         return '';
       }
-      return fs.readFile(fsFilePath);
+      console.log('LOADING ', fsFilePath)
+      return fs.sys.readFile(fsFilePath);
     },
   };
 };

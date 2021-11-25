@@ -34,8 +34,11 @@ export const parseCollection = (
   // sync on purpose :(
   const collectionJsonStr = compilerCtx.fs.readFileSync(collectionFilePath);
   if (!collectionJsonStr) {
+    console.log('oh no - i didnt find', collectionJsonStr)
     return null;
   }
+
+  console.log('i read ', collectionFilePath)
 
   // get the directory where the collection collection file is sitting
   const collectionDir = normalizePath(dirname(collectionFilePath));
@@ -53,7 +56,7 @@ export const parseCollection = (
   collection.moduleDir = collectionPackageRootDir;
 
   // cache it for later yo
-  compilerCtx.collections.push(collection);
+  // compilerCtx.collections.push(collection);
 
   return collection;
 };

@@ -3,7 +3,7 @@ import { build } from './build';
 import { BuildContext } from './build-ctx';
 import { compilerRequest } from '../bundle/dev-module';
 import { createTsWatchProgram } from '../transpile/create-watch-program';
-import { dirname, resolve } from 'path';
+import { dirname, resolve, join } from 'path';
 import {
   filesChanged,
   hasHtmlChanges,
@@ -14,7 +14,7 @@ import {
   scriptsDeleted,
 } from '../fs-watch/fs-watch-rebuild';
 import { hasServiceWorkerChanges } from '../service-worker/generate-sw';
-import { isString } from '@utils';
+import { isString, normalizePath, parsePackageJson } from '@utils';
 import type ts from 'typescript';
 
 export const createWatchBuild = async (config: d.Config, compilerCtx: d.CompilerCtx): Promise<d.CompilerWatcher> => {
@@ -69,8 +69,10 @@ export const createWatchBuild = async (config: d.Config, compilerCtx: d.Compiler
   const start = async () => {
     const srcRead = watchSrcDirectory(config, compilerCtx);
     const otherRead = watchRootFiles(config, compilerCtx);
+    const localNodeModsRead = watchLocalNodeModules(config, compilerCtx);
     await srcRead;
     await otherRead;
+    await localNodeModsRead;
     tsWatchProgram = await createTsWatchProgram(config, onBuild);
     return watchWaiter;
   };
@@ -84,15 +86,18 @@ export const createWatchBuild = async (config: d.Config, compilerCtx: d.Compiler
 
       switch (eventKind) {
         case 'dirAdd':
+          console.log('added dir', p)
           dirsAdded.add(p);
           break;
         case 'dirDelete':
           dirsDeleted.add(p);
           break;
         case 'fileAdd':
+          console.log('added file', p)
           filesAdded.add(p);
           break;
         case 'fileUpdate':
+          console.log('fileUpdate', p)
           filesUpdated.add(p);
           break;
         case 'fileDelete':
@@ -174,6 +179,63 @@ const watchSrcDirectory = async (config: d.Config, compilerCtx: d.CompilerCtx) =
 
   compilerCtx.addWatchDir(config.srcDir, true);
 };
+
+const watchLocalNodeModules = async (config: d.Config, compilerCtx: d.CompilerCtx) => {
+  if (!compilerCtx.fs.sys) return;
+
+  const nodeMods = (await compilerCtx.fs.readdir(join(config.rootDir, 'node_modules')));
+  const symLinkNodeMods = await Promise.all(
+    nodeMods.map(p => compilerCtx.fs.sys.isSymbolicLink(p.absPath))
+  ).then((symLinkOrNot) => nodeMods.filter((_v, i) => symLinkOrNot[i]));
+
+  if (!symLinkNodeMods || !symLinkNodeMods.length) return;
+
+  await Promise.all(
+    symLinkNodeMods.map(async p => {
+      const pkgJsonFilePath = join(p.absPath, 'package.json');
+      const pkgJsonStr = await compilerCtx.fs.readFile(pkgJsonFilePath);
+      if (!pkgJsonStr || config.packageJsonFilePath === pkgJsonFilePath) return;
+
+      const parsedPkgJson = parsePackageJson(pkgJsonStr, pkgJsonFilePath);
+      if (parsedPkgJson.diagnostic) return;
+
+      const pkgDir = dirname(pkgJsonFilePath);
+
+      // this is a stencil collection - add the whole directory
+      if (
+        isString(parsedPkgJson.data.collection) && parsedPkgJson.data.collection.endsWith('.json') &&
+        isString(parsedPkgJson.data.types) && parsedPkgJson.data.types.endsWith('.d.ts')
+      ) {
+        const collectionFilePath = join(pkgDir, parsedPkgJson.data.collection);
+        const collectionJsonStr = compilerCtx.fs.readFileSync(collectionFilePath);
+        if (!collectionJsonStr) return;
+
+        // get the directory where the collection json file is sitting and add all those files to watch
+        const collectionDir = normalizePath(dirname(collectionFilePath));
+        const files = await compilerCtx.fs.readdir(collectionDir, {
+          recursive: true,
+          excludeDirNames: ['.cache', '.git', '.github', '.stencil', '.vscode', 'node_modules']
+        });
+        files.filter(({ isFile }) => isFile).forEach(({ absPath }) => {
+          console.log('adding this', absPath)
+          compilerCtx.addWatchFile(absPath)});
+        return;
+      } else {
+        // watch other 'main' package.json files
+        if (parsedPkgJson.data.main) {
+          const mainPath = join(pkgDir, parsedPkgJson.data.main);
+          const collectionJsonStr = await compilerCtx.fs.stat(mainPath);
+          if (collectionJsonStr.isFile) compilerCtx.addWatchFile(mainPath);
+        }
+        if (parsedPkgJson.data.module) {
+          const modPath = join(pkgDir, parsedPkgJson.data.main);
+          const collectionJsonStr = await compilerCtx.fs.stat(modPath);
+          if (collectionJsonStr.isFile) compilerCtx.addWatchFile(modPath);
+        }
+      }
+    })
+  );
+}
 
 const watchRootFiles = async (config: d.Config, compilerCtx: d.CompilerCtx) => {
   // non-src files that cause a rebuild

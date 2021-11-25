@@ -17,6 +17,23 @@ import { resolveRemoteModuleIdSync } from '../resolve/resolve-module-sync';
 import { version } from '../../../version';
 import ts from 'typescript';
 
+interface ResolvedModuleFullWOgPath extends ts.ResolvedModuleFull {
+  /**
+   * When the resolved is not created from cache, the value is
+   *  - string if it is symbolic link to the resolved `path`
+   *  - undefined if `path` is not a symbolic link
+   * When the resolved is created using value from cache of ResolvedModuleWithFailedLookupLocations, the value is:
+   *  - string if it is symbolic link to the resolved `path`
+   *  - true if `path` is not a symbolic link - this indicates that the `originalPath` calculation is already done and needs to be skipped
+   * Note: This is a file name with preserved original casing, not a normalized `Path`.
+   */
+  originalPath?: string | true;
+}
+
+interface TSResolvedModuleWithFailedLookupLocations extends ts.ResolvedModuleWithFailedLookupLocations {
+  resolvedModule: ResolvedModuleFullWOgPath
+}
+
 export const patchTypeScriptResolveModule = (config: d.Config, inMemoryFs: d.InMemoryFileSystem) => {
   let compilerExe: string;
   if (config.sys) {
@@ -51,7 +68,7 @@ export const tsResolveModuleName = (
 
     const compilerOptions: ts.CompilerOptions = { ...config.tsCompilerOptions };
     compilerOptions.resolveJsonModule = true;
-    return resolveModuleName(moduleName, containingFile, compilerOptions, host);
+    return resolveModuleName(moduleName, containingFile, compilerOptions, host) as TSResolvedModuleWithFailedLookupLocations;
   }
 
   return null;
@@ -65,6 +82,7 @@ export const tsResolveModuleNamePackageJsonPath = (
 ) => {
   try {
     const resolvedModule = tsResolveModuleName(config, compilerCtx, moduleName, containingFile);
+
     if (resolvedModule && resolvedModule.resolvedModule && resolvedModule.resolvedModule.resolvedFileName) {
       const rootDir = resolve('/');
       let resolvedFileName = resolvedModule.resolvedModule.resolvedFileName;

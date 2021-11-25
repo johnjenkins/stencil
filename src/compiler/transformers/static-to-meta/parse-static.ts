@@ -60,6 +60,7 @@ export const updateModule = (
   if (collection != null) {
     moduleFile.isCollectionDependency = true;
     moduleFile.collectionName = collection.collectionName;
+    console.log('ADDING MOD FILE 1', moduleFile)
     collection.moduleFiles.push(moduleFile);
   }
   visitNode(tsSourceFile);

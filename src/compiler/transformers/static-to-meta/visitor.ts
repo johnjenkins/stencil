@@ -40,6 +40,7 @@ export const convertStaticToMeta = (
       if (collection != null) {
         moduleFile.isCollectionDependency = true;
         moduleFile.collectionName = collection.collectionName;
+        console.log('ADDING MOD FILE 2', moduleFile)
         collection.moduleFiles.push(moduleFile);
       } else {
         moduleFile.isCollectionDependency = false;
