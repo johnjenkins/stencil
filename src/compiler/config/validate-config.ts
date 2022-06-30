@@ -42,7 +42,6 @@ export const validateConfig = (
   }
 
   config.extras = config.extras || {};
-  config.extras.appendChildSlotFix = !!config.extras.appendChildSlotFix;
   config.extras.cloneNodeFix = !!config.extras.cloneNodeFix;
   config.extras.cssVarsShim = !!config.extras.cssVarsShim;
   config.extras.dynamicImportShim = !!config.extras.dynamicImportShim;
@@ -50,7 +49,6 @@ export const validateConfig = (
   config.extras.safari10 = !!config.extras.safari10;
   config.extras.scriptDataOpts = !!config.extras.scriptDataOpts;
   config.extras.shadowDomShim = !!config.extras.shadowDomShim;
-  config.extras.slotChildNodesFix = !!config.extras.slotChildNodesFix;
   config.extras.initializeNextTick = !!config.extras.initializeNextTick;
   config.extras.tagNameTransform = !!config.extras.tagNameTransform;
 

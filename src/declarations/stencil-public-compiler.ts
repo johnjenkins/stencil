@@ -249,6 +249,8 @@ export interface StencilConfig {
 
 export interface ConfigExtras {
   /**
+   * @deprecated - this is now automatically applied when components do not use `shadow: true`
+   *
    * By default, the slot polyfill does not update `appendChild()` so that it appends
    * new child nodes into the correct child slot like how shadow dom works. This is an opt-in
    * polyfill for those who need it when using `element.appendChild(node)` and expecting the
@@ -307,6 +309,8 @@ export interface ConfigExtras {
   scriptDataOpts?: boolean;
 
   /**
+   * @deprecated - this is now automatically applied when components do not use `shadow: true`
+   *
    * Experimental flag to align the behavior of invoking `textContent` on a scoped component to act more like a
    * component that uses the shadow DOM. Defaults to `false`
    */
@@ -329,6 +333,8 @@ export interface ConfigExtras {
   initializeNextTick?: boolean;
 
   /**
+   * @deprecated - this is now automatically applied when components do not use `shadow: true`
+   *
    * For browsers that do not support shadow dom (IE11 and Edge 18 and below), slot is polyfilled
    * to simulate the same behavior. However, the host element's `childNodes` and `children`
    * getters are not patched to only show the child nodes and elements of the default slot.

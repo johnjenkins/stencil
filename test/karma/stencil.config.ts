@@ -32,16 +32,13 @@ export const config: Config = {
   plugins: [nodePolyfills(), sass(), less(), postcss(), stylus()],
   buildEs5: true,
   extras: {
-    appendChildSlotFix: true,
     cloneNodeFix: true,
     cssVarsShim: true,
     dynamicImportShim: true,
     lifecycleDOMEvents: true,
     safari10: true,
-    scopedSlotTextContentFix: true,
     scriptDataOpts: true,
     shadowDomShim: true,
-    slotChildNodesFix: true,
   },
   devServer: {
     // when running `npm start`, serve from the root directory, rather than the `www` output target location
