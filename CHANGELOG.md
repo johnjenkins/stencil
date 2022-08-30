@@ -1,26 +1,59 @@
-## 🍷 [2.17.1](https://github.com/ionic-team/stencil/compare/v2.17.0...v2.17.1) (2022-06-30)
+## 🐞 [2.17.4](https://github.com/ionic-team/stencil/compare/v2.17.3...v2.17.4) (2022-08-22)
+
+
+### Bug Fixes
+
+* **compiler:** don't break HMR by mangling CSS ([#3517](https://github.com/ionic-team/stencil/issues/3517)) ([f5b2b69](https://github.com/ionic-team/stencil/commit/f5b2b69c23de044825fccb054610a52a345415e4)), closes [#3461](https://github.com/ionic-team/stencil/issues/3461)
+* **task:** consider config sys in task runner ([#3518](https://github.com/ionic-team/stencil/issues/3518)) ([103ec60](https://github.com/ionic-team/stencil/commit/103ec6098a5367d0de26450e1010bddb7ae8e890)), closes [#3510](https://github.com/ionic-team/stencil/issues/3510)
+
+
+
+## 🌭 [2.17.3](https://github.com/ionic-team/stencil/compare/v2.17.2...v2.17.3) (2022-08-02)
+
+
+### Bug Fixes
+
+* **validation:** update module location suggestion ([#3508](https://github.com/ionic-team/stencil/issues/3508)) ([9ccde5e](https://github.com/ionic-team/stencil/commit/9ccde5e5b693e564326f6c3f1104a7e3ebf1d1b1)), closes [#3507](https://github.com/ionic-team/stencil/issues/3507)
+
+
+
+## 🍤 [2.17.2](https://github.com/ionic-team/stencil/compare/v2.17.2-0...v2.17.2) (2022-08-01)
+
+
+### Bug Fixes
+
+* **cli:** fix bug with parsing --fooBar=baz type CLI flags  ([#3483](https://github.com/ionic-team/stencil/issues/3483)) ([65f5275](https://github.com/ionic-team/stencil/commit/65f5275ea64ba8c733eb959b5cf0c83a271877dc)), closes [#3471](https://github.com/ionic-team/stencil/issues/3471) [#3481](https://github.com/ionic-team/stencil/issues/3481)
+* **cli:** remove usage of deprecated npm env var from arg parser ([#3486](https://github.com/ionic-team/stencil/issues/3486)) ([22d9858](https://github.com/ionic-team/stencil/commit/22d985807587f500124af06a6436985b203fbc42)), closes [#3482](https://github.com/ionic-team/stencil/issues/3482)
+* **compiler:** fix typedef file generated for dist-custom-elements ([#3468](https://github.com/ionic-team/stencil/issues/3468)) ([854d498](https://github.com/ionic-team/stencil/commit/854d498840c15c152b003f0ea3e96d98c97a991d))
+* **compiler:** update package.json validation for the 'module' field ([#3475](https://github.com/ionic-team/stencil/issues/3475)) ([47c4ccb](https://github.com/ionic-team/stencil/commit/47c4ccb032fd0be8927a23187ba6d560a1832b1e))
+* **mock-doc:** add missing methods to the element mock ([#3480](https://github.com/ionic-team/stencil/issues/3480)) ([835e00f](https://github.com/ionic-team/stencil/commit/835e00fb16073616a07a9d59e9696d4cfec4277b))
+
+### Features
+
+* **mock-doc:** dispatch blur and focus events ([#3449](https://github.com/ionic-team/stencil/issues/3449)) ([15520b7](https://github.com/ionic-team/stencil/commit/15520b7066b366078f79be95ccc59d33aeff40d9))
+
+## 🏜 [2.17.2-0](https://github.com/ionic-team/stencil/compare/v2.17.1...v2.17.2-0) (2022-07-19)
+
+
+### Bug Fixes
+
+* **compiler:** fix typedef file generated for dist-custom-elements ([#3468](https://github.com/ionic-team/stencil/issues/3468)) ([854d498](https://github.com/ionic-team/stencil/commit/854d498840c15c152b003f0ea3e96d98c97a991d))
+
+
+### Features
+
+* **mock-doc:** dispatch blur and focus events ([#3449](https://github.com/ionic-team/stencil/issues/3449)) ([15520b7](https://github.com/ionic-team/stencil/commit/15520b7066b366078f79be95ccc59d33aeff40d9))
+
+
+
+## 😊 [2.17.1](https://github.com/ionic-team/stencil/compare/v2.17.0...v2.17.1) (2022-07-11)
 
 
 ### Bug Fixes
 
 * **cli:** add explicit support for Jest CLI arguments  ([#3444](https://github.com/ionic-team/stencil/issues/3444)) ([700b3a9](https://github.com/ionic-team/stencil/commit/700b3a9e010072db293a385eb90e30afc746cbef))
 * **compiler:** handle null window.location.origin ([#2813](https://github.com/ionic-team/stencil/issues/2813)) ([255cd66](https://github.com/ionic-team/stencil/commit/255cd6619e30e1af738f0690edb9e758871ed950))
-* **nested slots:** non-shadow nesting slots without 'slot-fb' now works ([ce4c994](https://github.com/ionic-team/stencil/commit/ce4c994c3d8d37de5919b685d035ecbf407c59a9))
-* **nested slots:** non-shadow nesting slots without 'slot-fb' now works ([f8e9349](https://github.com/ionic-team/stencil/commit/f8e9349b6656f5a91f863618c4f3186fa7d93a25))
-* **non-shadow slot fallback content:** added inline display when hiding to behave more akin to native shadow ([d9266d5](https://github.com/ionic-team/stencil/commit/d9266d5c0cd5cfc8e67645e6d63e29bc0384d45f))
-* **non-shadow slot fallback content:** added inline display when hiding to behave more akin to native shadow ([4e12078](https://github.com/ionic-team/stencil/commit/4e120780705a4216c417fe03f468c470306dcb4b))
-* **slot:** apply slot polyfill patches immediately to fix external initial rendering ([c74ca63](https://github.com/ionic-team/stencil/commit/c74ca6315fcc035d1deb1fa6817a05f47eddef60))
-* **slot:** apply slot polyfill patches immediately to fix external initial rendering ([e564064](https://github.com/ionic-team/stencil/commit/e5640649886e76810c3c523af2d2e542038f6624))
-* **slot:** patched textContent when using slot polyfill ([ff2e5f2](https://github.com/ionic-team/stencil/commit/ff2e5f289bd1395e4ead264ef86fab4eba41f260))
-* **slot:** patched textContent when using slot polyfill ([7d85c51](https://github.com/ionic-team/stencil/commit/7d85c5141dcb7b96a0b53f597f598f3d18b6ca13))
-
-
-### Features
-
-* **emit error events:** emit custom event on component error within lifecycle or render ([15fa80e](https://github.com/ionic-team/stencil/commit/15fa80e4d434acc0db1337e6889a0afb47f08713))
-* **emit error events:** emit custom event on component error within lifecycle or render ([ba5dec0](https://github.com/ionic-team/stencil/commit/ba5dec038214d1c941f0c4070e9f74b03d270b19))
-* **no-node slot fallback content:** removed all <slot-fb> nodes for fallback content. ([0225d29](https://github.com/ionic-team/stencil/commit/0225d297fdaae077526c4fd568600869b3b615c6))
-* **no-node slot fallback content:** removed all <slot-fb> nodes for fallback content. ([f9a0063](https://github.com/ionic-team/stencil/commit/f9a00632919d39886c3c950feb2c942f74ff9c8f))
+* **styles:** ensure styles are applied before paint ([#3452](https://github.com/ionic-team/stencil/issues/3452)) ([c47cec6](https://github.com/ionic-team/stencil/commit/c47cec6581d4409e8261b3516b78532b5c49d079))
 
 
 
