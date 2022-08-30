@@ -67,7 +67,6 @@ export const validateConfig = (
   }
 
   validatedConfig.extras = validatedConfig.extras || {};
-  validatedConfig.extras.appendChildSlotFix = !!validatedConfig.extras.appendChildSlotFix;
   validatedConfig.extras.cloneNodeFix = !!validatedConfig.extras.cloneNodeFix;
   validatedConfig.extras.cssVarsShim = !!validatedConfig.extras.cssVarsShim;
   validatedConfig.extras.dynamicImportShim = !!validatedConfig.extras.dynamicImportShim;
@@ -75,7 +74,6 @@ export const validateConfig = (
   validatedConfig.extras.safari10 = !!validatedConfig.extras.safari10;
   validatedConfig.extras.scriptDataOpts = !!validatedConfig.extras.scriptDataOpts;
   validatedConfig.extras.shadowDomShim = !!validatedConfig.extras.shadowDomShim;
-  validatedConfig.extras.slotChildNodesFix = !!validatedConfig.extras.slotChildNodesFix;
   validatedConfig.extras.initializeNextTick = !!validatedConfig.extras.initializeNextTick;
   validatedConfig.extras.tagNameTransform = !!validatedConfig.extras.tagNameTransform;
 
