@@ -57,35 +57,35 @@ export function runReleaseTasks(opts: BuildOptions, args: ReadonlyArray<string>)
   }
 
   tasks.push(
-    {
-      title: 'Check git tag existence',
-      task: () =>
-        execa('git', ['fetch'])
-          // Retrieve the prefix for a version string - https://docs.npmjs.com/cli/v7/using-npm/config#tag-version-prefix
-          .then(() => execa('npm', ['config', 'get', 'tag-version-prefix']))
-          .then(
-            ({ stdout }) => (tagPrefix = stdout),
-            () => {}
-          )
-          // verify that a tag for the new version string does not already exist by checking the output of
-          // `git rev-parse --verify`
-          .then(() => execa('git', ['rev-parse', '--quiet', '--verify', `refs/tags/${tagPrefix}${newVersion}`]))
-          .then(
-            ({ stdout }) => {
-              if (stdout) {
-                throw new Error(`Git tag \`${tagPrefix}${newVersion}\` already exists.`);
-              }
-            },
-            (err) => {
-              // Command fails with code 1 and no output if the tag does not exist, even though `--quiet` is provided
-              // https://github.com/sindresorhus/np/pull/73#discussion_r72385685
-              if (err.stdout !== '' || err.stderr !== '') {
-                throw err;
-              }
-            }
-          ),
-      skip: () => isDryRun,
-    },
+    // {
+    //   title: 'Check git tag existence',
+    //   task: () =>
+    //     execa('git', ['fetch'])
+    //       // Retrieve the prefix for a version string - https://docs.npmjs.com/cli/v7/using-npm/config#tag-version-prefix
+    //       .then(() => execa('npm', ['config', 'get', 'tag-version-prefix']))
+    //       .then(
+    //         ({ stdout }) => (tagPrefix = stdout),
+    //         () => {}
+    //       )
+    //       // verify that a tag for the new version string does not already exist by checking the output of
+    //       // `git rev-parse --verify`
+    //       .then(() => execa('git', ['rev-parse', '--quiet', '--verify', `refs/tags/${tagPrefix}${newVersion}`]))
+    //       .then(
+    //         ({ stdout }) => {
+    //           if (stdout) {
+    //             throw new Error(`Git tag \`${tagPrefix}${newVersion}\` already exists.`);
+    //           }
+    //         },
+    //         (err) => {
+    //           // Command fails with code 1 and no output if the tag does not exist, even though `--quiet` is provided
+    //           // https://github.com/sindresorhus/np/pull/73#discussion_r72385685
+    //           if (err.stdout !== '' || err.stderr !== '') {
+    //             throw err;
+    //           }
+    //         }
+    //       ),
+    //   skip: () => isDryRun,
+    // },
     {
       title: 'Check current branch',
       task: () =>
