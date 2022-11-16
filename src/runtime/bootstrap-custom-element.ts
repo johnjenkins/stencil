@@ -1,14 +1,14 @@
-import type * as d from '../declarations';
-import { attachStyles, getScopeId, registerStyle } from './styles';
 import { BUILD } from '@app-data';
+import { forceUpdate, getHostRef, registerHost, styles, supportsShadow } from '@platform';
 import { CMP_FLAGS } from '@utils';
-import { computeMode } from './mode';
+
+import type * as d from '../declarations';
 import { connectedCallback } from './connected-callback';
 import { disconnectedCallback } from './disconnected-callback';
-import { forceUpdate, getHostRef, registerHost, styles, supportsShadow } from '@platform';
+import { computeMode } from './mode';
 import { proxyComponent } from './proxy-component';
 import { PROXY_FLAGS } from './runtime-constants';
-import { patchCloneNode, patchPseudoShadowDom } from './dom-extras';
+import { attachStyles, getScopeId, registerStyle } from './styles';
 
 export const defineCustomElement = (Cstr: any, compactMeta: d.ComponentRuntimeMetaCompact) => {
   customElements.define(compactMeta[1], proxyCustomElement(Cstr, compactMeta) as CustomElementConstructor);
@@ -33,16 +33,6 @@ export const proxyCustomElement = (Cstr: any, compactMeta: d.ComponentRuntimeMet
   }
   if (BUILD.shadowDom && !supportsShadow && cmpMeta.$flags$ & CMP_FLAGS.shadowDomEncapsulation) {
     cmpMeta.$flags$ |= CMP_FLAGS.needsShadowDomShim;
-  }
-
-  if (
-    cmpMeta.$flags$ & CMP_FLAGS.hasSlotRelocation ||
-    (cmpMeta.$flags$ & CMP_FLAGS.shadowDomEncapsulation && CMP_FLAGS.needsShadowDomShim)
-  ) {
-    patchPseudoShadowDom(Cstr.prototype);
-    if (BUILD.cloneNodeFix) {
-      patchCloneNode(Cstr.prototype);
-    }
   }
 
   const originalConnectedCallback = Cstr.prototype.connectedCallback;
@@ -88,7 +78,7 @@ export const forceModeUpdate = (elm: d.RenderNode) => {
     const mode = computeMode(elm);
     const hostRef = getHostRef(elm);
 
-    if (hostRef && hostRef.$modeName$ !== mode) {
+    if (hostRef.$modeName$ !== mode) {
       const cmpMeta = hostRef.$cmpMeta$;
       const oldScopeId = elm['s-sc'];
       const scopeId = getScopeId(cmpMeta, mode);
