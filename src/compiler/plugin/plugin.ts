@@ -85,6 +85,7 @@ export const runPluginTransforms = async (
   const transformResults: PluginTransformResults = {
     code: sourceText,
     id: id,
+    dependencies: [],
   };
 
   const isRawCssFile = transformResults.id.toLowerCase().endsWith('.css');
@@ -137,6 +138,12 @@ export const runPluginTransforms = async (
               if (isString(pluginTransformResults.id)) {
                 transformResults.id = pluginTransformResults.id;
               }
+              if (Array.isArray(pluginTransformResults.dependencies)) {
+                const imports = pluginTransformResults.dependencies.filter(
+                  (f) => !transformResults.dependencies.includes(f)
+                );
+                transformResults.dependencies.push(...imports);
+              }
             }
           }
         }
@@ -166,7 +173,10 @@ export const runPluginTransforms = async (
         cmp.styleDocs
       );
       transformResults.code = cssParseResults.styleText;
-      transformResults.dependencies = cssParseResults.imports;
+      if (Array.isArray(cssParseResults.imports)) {
+        const imports = cssParseResults.imports.filter((f) => !transformResults.dependencies.includes(f));
+        transformResults.dependencies.push(...imports);
+      }
     } else {
       const cssParseResults = await parseCssImports(
         config,
@@ -177,9 +187,14 @@ export const runPluginTransforms = async (
         transformResults.code
       );
       transformResults.code = cssParseResults.styleText;
-      transformResults.dependencies = cssParseResults.imports;
+      if (Array.isArray(cssParseResults.imports)) {
+        const imports = cssParseResults.imports.filter((f) => !transformResults.dependencies.includes(f));
+        transformResults.dependencies.push(...imports);
+      }
     }
   }
+
+  // console.log(transformResults.dependencies)
 
   return transformResults;
 };
