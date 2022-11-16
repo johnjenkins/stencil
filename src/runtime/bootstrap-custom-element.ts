@@ -8,6 +8,7 @@ import { disconnectedCallback } from './disconnected-callback';
 import { computeMode } from './mode';
 import { proxyComponent } from './proxy-component';
 import { PROXY_FLAGS } from './runtime-constants';
+import { patchCloneNode, patchPseudoShadowDom } from './dom-extras';
 import { attachStyles, getScopeId, registerStyle } from './styles';
 
 export const defineCustomElement = (Cstr: any, compactMeta: d.ComponentRuntimeMetaCompact) => {
@@ -33,6 +34,16 @@ export const proxyCustomElement = (Cstr: any, compactMeta: d.ComponentRuntimeMet
   }
   if (BUILD.shadowDom && !supportsShadow && cmpMeta.$flags$ & CMP_FLAGS.shadowDomEncapsulation) {
     cmpMeta.$flags$ |= CMP_FLAGS.needsShadowDomShim;
+  }
+
+  if (
+    cmpMeta.$flags$ & CMP_FLAGS.hasSlotRelocation ||
+    (cmpMeta.$flags$ & CMP_FLAGS.shadowDomEncapsulation && CMP_FLAGS.needsShadowDomShim)
+  ) {
+    patchPseudoShadowDom(Cstr.prototype);
+    if (BUILD.cloneNodeFix) {
+      patchCloneNode(Cstr.prototype);
+    }
   }
 
   const originalConnectedCallback = Cstr.prototype.connectedCallback;
@@ -78,7 +89,7 @@ export const forceModeUpdate = (elm: d.RenderNode) => {
     const mode = computeMode(elm);
     const hostRef = getHostRef(elm);
 
-    if (hostRef.$modeName$ !== mode) {
+    if (hostRef && hostRef.$modeName$ !== mode) {
       const cmpMeta = hostRef.$cmpMeta$;
       const oldScopeId = elm['s-sc'];
       const scopeId = getScopeId(cmpMeta, mode);

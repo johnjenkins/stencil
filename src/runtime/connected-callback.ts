@@ -97,7 +97,7 @@ export const connectedCallback = (elm: d.HostElement) => {
       } else {
         initializeComponent(elm, hostRef, cmpMeta);
       }
-    } else {
+    } else if (hostRef) {
       // not the first time this has connected
 
       // reattach any event listeners to the host
@@ -105,7 +105,7 @@ export const connectedCallback = (elm: d.HostElement) => {
       addHostEventListeners(elm, hostRef, cmpMeta.$listeners$, false);
 
       // fire off connectedCallback() on component instance
-      fireConnectedCallback(hostRef.$lazyInstance$, elm);
+      fireConnectedCallback(hostRef.$lazyInstance$);
     }
 
     endConnected();
@@ -123,5 +123,6 @@ const setContentReference = (elm: d.HostElement) => {
     BUILD.isDebug ? `content-ref (host=${elm.localName})` : ''
   ) as any);
   contentRefElm['s-cn'] = true;
-  elm.insertBefore(contentRefElm, elm.firstChild);
+  if (!!elm.firstChild) elm.insertBefore(contentRefElm, elm.firstChild);
+  else elm.appendChild(contentRefElm);
 };

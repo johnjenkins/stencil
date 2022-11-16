@@ -5,8 +5,8 @@ import { CMP_FLAGS } from '@utils';
 import type * as d from '../declarations';
 import { connectedCallback } from './connected-callback';
 import { disconnectedCallback } from './disconnected-callback';
-import { patchChildSlotNodes, patchCloneNode, patchSlotAppendChild, patchTextContent } from './dom-extras';
 import { hmrStart } from './hmr-component';
+import { patchCloneNode, patchPseudoShadowDom } from './dom-extras';
 import { createTime, installDevTools } from './profile';
 import { proxyComponent } from './proxy-component';
 import { HYDRATED_CSS, HYDRATED_STYLE_ID, PLATFORM_FLAGS, PROXY_FLAGS } from './runtime-constants';
@@ -106,9 +106,6 @@ export const bootstrapLazy = (lazyBundles: d.LazyBundlesRuntimeData, options: d.
               (self as any).shadowRoot = self;
             }
           }
-          if (BUILD.slotChildNodesFix) {
-            patchChildSlotNodes(self, cmpMeta);
-          }
         }
 
         connectedCallback() {
@@ -133,22 +130,21 @@ export const bootstrapLazy = (lazyBundles: d.LazyBundlesRuntimeData, options: d.
         }
       };
 
-      if (BUILD.cloneNodeFix) {
-        patchCloneNode(HostElement.prototype);
-      }
-
-      if (BUILD.appendChildSlotFix) {
-        patchSlotAppendChild(HostElement.prototype);
+      if (
+        !BUILD.hydrateServerSide &&
+        (cmpMeta.$flags$ & CMP_FLAGS.hasSlotRelocation ||
+          cmpMeta.$flags$ & (CMP_FLAGS.shadowDomEncapsulation && CMP_FLAGS.needsShadowDomShim))
+      ) {
+        patchPseudoShadowDom(HostElement.prototype);
+        if (BUILD.cloneNodeFix) {
+          patchCloneNode(HostElement.prototype);
+        }
       }
 
       if (BUILD.hotModuleReplacement) {
         (HostElement as any).prototype['s-hmr'] = function (hmrVersionId: string) {
           hmrStart(this, cmpMeta, hmrVersionId);
         };
-      }
-
-      if (BUILD.scopedSlotTextContentFix) {
-        patchTextContent(HostElement.prototype, cmpMeta);
       }
 
       cmpMeta.$lazyBundleId$ = lazyBundle[0];
