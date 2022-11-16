@@ -52,6 +52,8 @@ describe('convert-decorators', () => {
                 "tags": [],
                 "text": "" 
               },
+              "getter": false, 
+              "setter": false,
               "attribute": "val",
               "reflect": false,
               "defaultValue": "\\"initial value\\""

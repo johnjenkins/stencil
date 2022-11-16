@@ -133,6 +133,20 @@ const removeStencilMethodDecorators = (
           member.type,
           member.body
         );
+      } else if (ts.isGetAccessor(member)) {
+        return ts.factory.updateGetAccessorDeclaration(
+          member,
+          newDecorators,
+          member.modifiers,
+          member.name,
+          member.parameters,
+          member.type,
+          member.body
+        );
+      } else if (ts.isSetAccessor(member)) {
+        const err = buildError(diagnostics);
+        err.messageText = 'A get accessor should be decorated before a set accessor';
+        augmentDiagnosticWithNode(err, member);
       } else if (ts.isPropertyDeclaration(member)) {
         if (shouldInitializeInConstructor(member)) {
           // if the current class member is decorated with either 'State' or
