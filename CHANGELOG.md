@@ -1,27 +1,33 @@
-## 🏐 [2.19.4](https://github.com/ionic-team/stencil/compare/v2.19.3...v2.19.4) (2022-11-16)
-
-
-### Bug Fixes
-
-* **nested slots:** non-shadow nesting slots without 'slot-fb' now works ([ce4c994](https://github.com/ionic-team/stencil/commit/ce4c994c3d8d37de5919b685d035ecbf407c59a9))
-* **nested slots:** non-shadow nesting slots without 'slot-fb' now works ([f8e9349](https://github.com/ionic-team/stencil/commit/f8e9349b6656f5a91f863618c4f3186fa7d93a25))
-* **non-shadow slot fallback content:** added inline display when hiding to behave more akin to native shadow ([d9266d5](https://github.com/ionic-team/stencil/commit/d9266d5c0cd5cfc8e67645e6d63e29bc0384d45f))
-* **non-shadow slot fallback content:** added inline display when hiding to behave more akin to native shadow ([4e12078](https://github.com/ionic-team/stencil/commit/4e120780705a4216c417fe03f468c470306dcb4b))
-* **slot:** apply slot polyfill patches immediately to fix external initial rendering ([c74ca63](https://github.com/ionic-team/stencil/commit/c74ca6315fcc035d1deb1fa6817a05f47eddef60))
-* **slot:** apply slot polyfill patches immediately to fix external initial rendering ([e564064](https://github.com/ionic-team/stencil/commit/e5640649886e76810c3c523af2d2e542038f6624))
-* **slot:** patched textContent when using slot polyfill ([ff2e5f2](https://github.com/ionic-team/stencil/commit/ff2e5f289bd1395e4ead264ef86fab4eba41f260))
-* **slot:** patched textContent when using slot polyfill ([7d85c51](https://github.com/ionic-team/stencil/commit/7d85c5141dcb7b96a0b53f597f598f3d18b6ca13))
-* **styles:** nested files are not applied in watch mode ([d98da58](https://github.com/ionic-team/stencil/commit/d98da587004472cceff06ce6bef5233cfa237dc6))
+# 🍟 [2.21.0](https://github.com/ionic-team/stencil/compare/v2.20.0...v2.21.0) (2023-01-04)
 
 
 ### Features
 
-* **emit error events:** emit custom event on component error within lifecycle or render ([15fa80e](https://github.com/ionic-team/stencil/commit/15fa80e4d434acc0db1337e6889a0afb47f08713))
-* **emit error events:** emit custom event on component error within lifecycle or render ([ba5dec0](https://github.com/ionic-team/stencil/commit/ba5dec038214d1c941f0c4070e9f74b03d270b19))
-* **no-node slot fallback content:** removed all <slot-fb> nodes for fallback content. ([0225d29](https://github.com/ionic-team/stencil/commit/0225d297fdaae077526c4fd568600869b3b615c6))
-* **no-node slot fallback content:** removed all <slot-fb> nodes for fallback content. ([f9a0063](https://github.com/ionic-team/stencil/commit/f9a00632919d39886c3c950feb2c942f74ff9c8f))
-* **non-shadow components:** shim `removeChild` on non-shadow components ([4850526](https://github.com/ionic-team/stencil/commit/485052627f9ec31f245b10fcbd24907f4a26364a))
+* **compiler:** copy doc block from component to generated types ([#3525](https://github.com/ionic-team/stencil/issues/3525)) ([2e4b1fc](https://github.com/ionic-team/stencil/commit/2e4b1fcdc0b3fd41928d27cf9ee525a15b02d617))
+* **typescript:** add support for typescript 4.9 ([#3863](https://github.com/ionic-team/stencil/issues/3863)) ([542c46a](https://github.com/ionic-team/stencil/commit/542c46a94400246f1b995df0840c918e080a9e57))
 
+
+### Thanks
+
+🎉 Thanks for @jgroth for their contributions! 🎉
+
+
+# 🍁 [2.20.0](https://github.com/ionic-team/stencil/compare/v2.19.3...v2.20.0) (2022-12-05)
+
+
+### Bug Fixes
+
+* **cli:** ensure that argument order is correct for Jest ([#3827](https://github.com/ionic-team/stencil/issues/3827)) ([eb44060](https://github.com/ionic-team/stencil/commit/eb440602d79396eebbf3f8a509f60f3e03417440))
+
+
+### Features
+
+* **typescript:** support typescript 4.8 ([#3743](https://github.com/ionic-team/stencil/issues/3743)) ([8fa35f2](https://github.com/ionic-team/stencil/commit/8fa35f2e12a5da09cf28e7b92103675164957d08))
+
+
+### Thanks
+
+🎉 Thanks for @PengBoUESTC for their contributions! 🎉
 
 
 ## 🌏 [2.19.3](https://github.com/ionic-team/stencil/compare/v2.19.2...v2.19.3) (2022-11-15)
