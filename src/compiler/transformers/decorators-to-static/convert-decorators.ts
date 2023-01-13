@@ -133,8 +133,7 @@ const removeStencilMethodDecorators = (
       } else if (ts.isGetAccessor(member)) {
         return ts.factory.updateGetAccessorDeclaration(
           member,
-          newDecorators,
-          member.modifiers,
+          ts.canHaveModifiers(member) ? ts.getModifiers(member) : undefined,
           member.name,
           member.parameters,
           member.type,

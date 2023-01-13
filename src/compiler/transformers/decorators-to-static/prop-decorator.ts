@@ -69,7 +69,7 @@ const parsePropDecorator = (
   typeChecker: ts.TypeChecker,
   prop: ts.PropertyDeclaration | ts.GetAccessorDeclaration,
   watchable: Set<string>,
-  newMembers: ts.ClassElement[],
+  newMembers: ts.ClassElement[]
 ): ts.PropertyAssignment | null => {
   const propDecorator = retrieveTsDecorators(prop)?.find(isDecoratorNamed('Prop'));
   if (propDecorator == null) {
