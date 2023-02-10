@@ -421,13 +421,27 @@ const clientHydrate = (
             node['s-hsf'] = true;
           }
           // this slot node has fallback text?
-          // (if so, the previous node will be that text)
+          // (if so, the previous node comment will have that text)
           let textNode: d.RenderNode;
+
           if (childIdSplt[7] === '1' && node.previousSibling.nodeType === NODE_TYPE.CommentNode) {
             node['s-sfc'] = node.previousSibling.nodeValue;
 
-            // create a text node
-            textNode = doc.createTextNode(node['s-sfc']) as any as d.RenderNode;
+            const foundTextNode = node.previousSibling?.previousSibling as d.RenderNode;
+            if (
+              foundTextNode &&
+              foundTextNode.nodeType === NODE_TYPE.TextNode &&
+              foundTextNode.nodeValue === node['s-sfc']
+            ) {
+              // the incoming html already have this text fallback node rendered
+              // let's use that and create the relationship with it in the vdom
+              textNode = foundTextNode;
+            } else {
+              // the incoming html doesn't have this text node rendered
+              // (probably 'cos the slot is being used)
+              // so create a text node
+              textNode = doc.createTextNode(node['s-sfc']) as any as d.RenderNode;
+            }
             textNode['s-sf'] = true;
             textNode['s-hn'] = hostElm.tagName.toUpperCase();
 
