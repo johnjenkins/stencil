@@ -420,11 +420,10 @@ const clientHydrate = (
           if (childIdSplt[6] === '1') {
             node['s-hsf'] = true;
           }
-          // this slot node has fallback text?
-          // (if so, the previous node comment will have that text)
-          let textNode: d.RenderNode;
 
-          if (childIdSplt[7] === '1' && node.previousSibling.nodeType === NODE_TYPE.CommentNode) {
+          if (childIdSplt[7] === '1' && node.previousSibling?.nodeType === NODE_TYPE.CommentNode) {
+            // this slot node has fallback text?
+            // (if so, the previous node comment will have that text)
             node['s-sfc'] = node.previousSibling.nodeValue;
 
             const foundTextNode = node.previousSibling?.previousSibling as d.RenderNode;
@@ -433,21 +432,15 @@ const clientHydrate = (
               foundTextNode.nodeType === NODE_TYPE.TextNode &&
               foundTextNode.nodeValue === node['s-sfc']
             ) {
-              // the incoming html already have this text fallback node rendered
-              // let's use that and create the relationship with it in the vdom
-              textNode = foundTextNode;
-            } else {
-              // the incoming html doesn't have this text node rendered
-              // (probably 'cos the slot is being used)
-              // so create a text node
-              textNode = doc.createTextNode(node['s-sfc']) as any as d.RenderNode;
+              // if there's pre-rendered text node,
+              // remove now and let vdom-render take over creation & showing / hiding
+              foundTextNode.remove();
             }
-            textNode['s-sf'] = true;
-            textNode['s-hn'] = hostElm.tagName.toUpperCase();
 
-            // add node to our vdom tree
+            // add to vdom tree
             const textVnode = createSimpleVNode({
-              $elm$: textNode,
+              $text$: node['s-sfc'],
+              $hostId$: childIdSplt[1]
             });
             childVNode.$children$ = childVNode.$children$ || [];
             childVNode.$children$[textVnode.$index$ as any] = textVnode;

@@ -11,13 +11,14 @@ import { patchRemove } from '../dom-extras';
 const renderSlotFallbackContent = (slotNode: d.RenderNode, hide: boolean) => {
   // if this slot doesn't have fallback content, return
   if (!slotNode['s-hsf']) return;
-  let childNode: d.RenderNode = slotNode;
+  let childNode: d.RenderNode = slotNode.parentNode.firstChild as d.RenderNode;
 
   // in non-shadow component, slot nodes are just empty text nodes or comment nodes
   // the 'children' nodes are therefore placed next to it.
   // Let's keep find siblings that relate to this slot
-  while ((childNode = childNode.previousSibling as d.RenderNode) && childNode.tagName !== slotNode['s-hn']) {
-    if (childNode['s-sr'] && hide && childNode['s-psn'] && childNode['s-psn'] === slotNode['s-sn']) {
+  do {
+
+    if (childNode['s-sr'] && hide && childNode['s-psn'] === slotNode['s-sn']) {
       // if this child node is a nested slot
       // drill into it's children to hide them in-turn
       renderSlotFallbackContent(childNode, true);
@@ -26,7 +27,7 @@ const renderSlotFallbackContent = (slotNode: d.RenderNode, hide: boolean) => {
     // this child node doesn't relate to this slot?
     if (childNode['s-sn'] !== slotNode['s-sn']) continue;
 
-    if (childNode.nodeType === NODE_TYPE.ElementNode) {
+    if (childNode.nodeType === NODE_TYPE.ElementNode && childNode['s-sf']) {
       // we found an fallback element. Hide or show
       childNode.hidden = hide;
       childNode.style.display = hide ? 'none' : '';
@@ -39,7 +40,9 @@ const renderSlotFallbackContent = (slotNode: d.RenderNode, hide: boolean) => {
         childNode.textContent = childNode['s-sfc'];
       }
     }
-  }
+  } while (
+    (childNode = ((childNode as any).__nextSibling || childNode.nextSibling) as d.RenderNode)
+  )
 };
 
 /**
@@ -60,12 +63,11 @@ export const updateFallbackSlotVisibility = (node: d.RenderNode) => {
   for (i = 0, ilen = childNodes.length; i < ilen; i++) {
     // slot reference node?
     if (childNodes[i]['s-sr']) {
-      // ok, this component uses slots and we're on a slot node
+      // this component uses slots and we're on a slot node
       // let's find all it's slotted children or lack thereof
       // and show or hide fallback nodes (`<slot />` children)
 
       // get the slot name for this slot reference node
-
       slotNameAttr = childNodes[i]['s-sn'];
       slotNode = childNodes[i];
 
@@ -106,7 +108,7 @@ export const updateFallbackSlotVisibility = (node: d.RenderNode) => {
               childNodes[j].textContent &&
               (childNodes[j].textContent as string).trim() !== '')
           ) {
-            // we found a slotted element!
+            // we found a slotted something
             // let's hide all the fallback nodes
             renderSlotFallbackContent(slotNode, true);
 
