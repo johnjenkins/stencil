@@ -131,7 +131,6 @@ const createElm = (oldParentVNode: d.VNode, newParentVNode: d.VNode, childIndex:
     elm['s-hn'] = hostTagName;
 
     if (newVNode.$flags$ & (VNODE_FLAGS.isSlotFallback | VNODE_FLAGS.isSlotReference)) {
-
       // this is a slot reference node
       elm['s-sr'] = true;
 
@@ -148,9 +147,8 @@ const createElm = (oldParentVNode: d.VNode, newParentVNode: d.VNode, childIndex:
       }
 
       if (newVNode.$flags$ & VNODE_FLAGS.isSlotFallback) {
-
         if (newVNode.$children$) {
-           // this slot has fallback nodes
+          // this slot has fallback nodes
 
           for (i = 0; i < newVNode.$children$.length; ++i) {
             // create the node
@@ -175,7 +173,7 @@ const createElm = (oldParentVNode: d.VNode, newParentVNode: d.VNode, childIndex:
             // return node could have been null
             if (childNode) {
               // append our new node
-              containerElm.appendChild(childNode)
+              containerElm.appendChild(childNode);
             }
           }
         }
@@ -898,14 +896,17 @@ render() {
           // by default we're just going to insert it directly
           // after the slot reference node
           parentNodeRef = relocateData.$slotRefNode$.parentNode;
-          insertBeforeNode = relocateData.$slotRefNode$.nextSibling;
+          insertBeforeNode =
+            (relocateData.$slotRefNode$ as any).__nextSibling || relocateData.$slotRefNode$.nextSibling;
           orgLocationNode = nodeToRelocate['s-ol'] as any;
           ogInsertBeforeNode = insertBeforeNode;
 
-          while ((orgLocationNode = orgLocationNode.previousSibling as any)) {
+          while (
+            (orgLocationNode = ((orgLocationNode as any).__previousSibling || orgLocationNode.previousSibling) as any)
+          ) {
             refNode = orgLocationNode['s-nr'];
             if (refNode && refNode['s-sn'] === nodeToRelocate['s-sn'] && parentNodeRef === refNode.parentNode) {
-              refNode = refNode.nextSibling as any;
+              refNode = (refNode as any).__nextSibling || refNode.nextSibling;
               if (!refNode || !refNode['s-nr']) {
                 insertBeforeNode = refNode;
                 break;
@@ -915,7 +916,7 @@ render() {
 
           if (
             (!insertBeforeNode && parentNodeRef !== nodeToRelocate.parentNode) ||
-            nodeToRelocate.nextSibling !== insertBeforeNode
+            ((nodeToRelocate as any).__nextSibling || nodeToRelocate.nextSibling) !== insertBeforeNode
           ) {
             // we've checked that it's worth while to relocate
             // since that the node to relocate

@@ -11,12 +11,19 @@ import { patchRemove } from '../dom-extras';
 const renderSlotFallbackContent = (slotNode: d.RenderNode, hide: boolean) => {
   // if this slot doesn't have fallback content, return
   if (!slotNode['s-hsf']) return;
-  let childNode: d.RenderNode = slotNode.parentNode.firstChild as d.RenderNode;
 
   // in non-shadow component, slot nodes are just empty text nodes or comment nodes
   // the 'children' nodes are therefore placed next to it.
-  // Let's keep find siblings that relate to this slot
-  do {
+  // let's loop through those now
+  let childNodes = ((slotNode.parentNode as d.RenderNode).__childNodes ||
+    slotNode.parentNode.childNodes) as NodeListOf<d.RenderNode>;
+  let childNode: d.RenderNode;
+
+  const childNodesLen = childNodes.length;
+  let i = 0;
+
+  for (i; i < childNodesLen; i++) {
+    childNode = childNodes[i];
 
     if (childNode['s-sr'] && hide && childNode['s-psn'] === slotNode['s-sn']) {
       // if this child node is a nested slot
@@ -40,9 +47,7 @@ const renderSlotFallbackContent = (slotNode: d.RenderNode, hide: boolean) => {
         childNode.textContent = childNode['s-sfc'];
       }
     }
-  } while (
-    (childNode = ((childNode as any).__nextSibling || childNode.nextSibling) as d.RenderNode)
-  )
+  }
 };
 
 /**

@@ -218,9 +218,6 @@ const insertChildVNodeAnnotations = (
 
   if (vnodeChild.$children$ != null) {
     const childDepth = depth + 1;
-
-    parent
-
     vnodeChild.$children$.forEach((vnode, index) => {
       // if the parent is a mock slot,
       // we don't want to annotate it's children

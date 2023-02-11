@@ -8,9 +8,11 @@ describe('hydrate, slot fallback', () => {
     })
     class CmpA {
       render() {
-        return <article>
-        <slot>Fallback content</slot>
-      </article>;
+        return (
+          <article>
+            <slot>Fallback content</slot>
+          </article>
+        );
       }
     }
 
@@ -52,9 +54,11 @@ describe('hydrate, slot fallback', () => {
     })
     class CmpA {
       render() {
-        return <article>
-        <slot>Fallback content</slot>
-      </article>;
+        return (
+          <article>
+            <slot>Fallback content</slot>
+          </article>
+        );
       }
     }
 
@@ -98,10 +102,12 @@ describe('hydrate, slot fallback', () => {
     })
     class CmpA {
       render() {
-        return <article>
-        <slot>Fallback content parent</slot>
-        <p>Non slot based content</p>
-      </article>;
+        return (
+          <article>
+            <slot>Fallback content parent</slot>
+            <p>Non slot based content</p>
+          </article>
+        );
       }
     }
 
@@ -110,10 +116,12 @@ describe('hydrate, slot fallback', () => {
     })
     class CmpB {
       render() {
-        return <section>
-        <slot>Fallback content child</slot>
-        <p>Non slot based content</p>
-      </section>;
+        return (
+          <section>
+            <slot>Fallback content child</slot>
+            <p>Non slot based content</p>
+          </section>
+        );
       }
     }
 
@@ -183,10 +191,12 @@ describe('hydrate, slot fallback', () => {
     })
     class CmpA {
       render() {
-        return <article>
-        <slot>Fallback content parent</slot>
-        <p>Non slot based content</p>
-      </article>;
+        return (
+          <article>
+            <slot>Fallback content parent</slot>
+            <p>Non slot based content</p>
+          </article>
+        );
       }
     }
 
@@ -196,10 +206,12 @@ describe('hydrate, slot fallback', () => {
     })
     class CmpB {
       render() {
-        return <section>
-        <slot>Fallback content child</slot>
-        <p>Non slot based content</p>
-      </section>;
+        return (
+          <section>
+            <slot>Fallback content child</slot>
+            <p>Non slot based content</p>
+          </section>
+        );
       }
     }
 
