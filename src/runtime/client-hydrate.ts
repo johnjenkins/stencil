@@ -421,28 +421,44 @@ const clientHydrate = (
             node['s-hsf'] = true;
           }
 
-          let foundFallbackText: d.RenderNode;
           if (childIdSplt[7] === '1') {
             // this slot has fallback text
-            // it should be held in a comment node in the previous sibling
+            // it should be held in a comment node in the last few siblings
             // (white-space depending)
-            foundFallbackText = node.previousSibling as d.RenderNode;
-            while (foundFallbackText.nodeType !== NODE_TYPE.CommentNode || !foundFallbackText) {
+            let foundFallbackText = node.previousSibling;
+            while (!!foundFallbackText && foundFallbackText.nodeType !== NODE_TYPE.CommentNode) {
               foundFallbackText = foundFallbackText.previousSibling as d.RenderNode;
             }
 
-            if (foundFallbackText) {
-              // this slot node has fallback text?
-              node['s-sfc'] = foundFallbackText.nodeValue;
+            // this slot node has fallback text?
+            // (if so, the previous node comment will have that text)
+            node['s-sfc'] = foundFallbackText.nodeValue;
 
-              // add to vdom tree
-              const textVnode = createSimpleVNode({
-                $text$: node['s-sfc'],
-                $hostId$: childIdSplt[1],
-              });
-              childVNode.$children$ = childVNode.$children$ || [];
-              childVNode.$children$[textVnode.$index$ as any] = textVnode;
+            // if there's pre-rendered text node,
+            // remove now and let vdom-render take over creation & showing / hiding
+            let foundTextNode = foundFallbackText.previousSibling as d.RenderNode;
+            while (!!foundTextNode && foundTextNode.nodeType !== NODE_TYPE.TextNode) {
+              foundTextNode = foundTextNode.previousSibling as d.RenderNode;
             }
+            if (
+              foundTextNode &&
+              foundTextNode.nodeType === NODE_TYPE.TextNode &&
+              foundTextNode.nodeValue.trim() === node['s-sfc']
+            ) {
+              foundTextNode.remove();
+              // foundTextNode['s-hn'] = hostElm.tagName;
+              // foundTextNode['s-sn'] = node['s-sn'];
+              // foundTextNode['s-sf'] = true;
+            }
+
+            // add to vdom tree
+            const textVnode = createSimpleVNode({
+              $elm$: foundTextNode,
+              $text$: node['s-sfc'],
+              $hostId$: childIdSplt[1],
+            });
+            childVNode.$children$ = childVNode.$children$ || [];
+            childVNode.$children$[textVnode.$index$ as any] = textVnode;
           }
 
           // find this slots' current host parent as dictated by the vdom tree.
@@ -507,22 +523,6 @@ const clientHydrate = (
           } else {
             /* NON-SHADOW */
             const slot = childVNode.$elm$ as d.RenderNode;
-
-            if (foundFallbackText) {
-              // if there's pre-rendered text node in a non-shadow element
-              // remove now and let vdom-render take over creation & showing / hiding
-              let foundTextNode = foundFallbackText.previousSibling;
-              while (foundTextNode.nodeType !== NODE_TYPE.TextNode || !foundTextNode) {
-                foundTextNode = foundTextNode.previousSibling as d.RenderNode;
-              }
-              if (
-                foundTextNode &&
-                foundTextNode.nodeType === NODE_TYPE.TextNode &&
-                foundTextNode.nodeValue.trim() === node['s-sfc']
-              ) {
-                foundTextNode.remove();
-              }
-            }
 
             // test to see if this non-shadow component's mock 'slot' is placed
             // inside a nested component's shadowDOM. If so, it doesn't belong here;
