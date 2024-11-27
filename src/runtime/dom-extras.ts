@@ -414,12 +414,10 @@ const patchPreviousSibling = (node: Node) => {
   if (!node || (node as any).__previousSibling) return;
 
   let descriptor = Object.getOwnPropertyDescriptor(Node.prototype, 'previousSibling');
-  let toOverride = Node.prototype;
 
   if (!descriptor) {
     // for mock-doc
     descriptor = Object.getOwnPropertyDescriptor(node, 'previousSibling');
-    toOverride = node;
   }
   if (descriptor) Object.defineProperty(node, '__previousSibling', descriptor);
 
