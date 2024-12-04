@@ -3,6 +3,7 @@ import ts from 'typescript';
 
 import type * as d from '../../../declarations';
 import {
+  getAttributeTypeInfo,
   retrieveTsDecorators,
   retrieveTsModifiers,
   tsPropDeclNameAsString,
@@ -102,6 +103,20 @@ const visitClassDeclaration = (
   const componentDecorator = retrieveTsDecorators(classNode)?.find(isDecoratorNamed(importAliasMap.get('Component')));
   if (!componentDecorator) {
     return classNode;
+  }
+
+  if (classNode.heritageClauses) {
+    let extendNode: ts.ExpressionWithTypeArguments
+
+    classNode.heritageClauses.forEach((c) => {
+      extendNode = c.types.find(t => !!t.expression)
+    });
+
+    if (extendNode) {
+      // console.log(extendNode,'???', extendNode.expression.getText(), extendNode.expression.parent.getSourceFile().fileName )
+      console.log(getAttributeTypeInfo(extendNode.expression, extendNode.expression.getSourceFile(), typeChecker, program))
+      console.log(extendNode.expression, extendNode.expression.kind)
+    }
   }
 
   const classMembers = classNode.members;

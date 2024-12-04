@@ -4,6 +4,7 @@ import ts from 'typescript';
 import type * as d from '../../declarations';
 import { StencilStaticGetter } from './decorators-to-static/decorators-constants';
 import { addToLibrary, findTypeWithName, getHomeModule, getOriginalTypeName } from './type-library';
+import { HOST_REF_ARG } from './component-lazy/constants';
 
 export const getScriptTarget = () => {
   // using a fn so the browser compiler doesn't require the global ts for startup
@@ -387,7 +388,9 @@ export const getAttributeTypeInfo = (
 ): d.ComponentCompilerTypeReferences => {
   const allReferences: d.ComponentCompilerTypeReferences = {};
   getAllTypeReferences(checker, baseNode).forEach((typeInfo) => {
+    console.log('typeInfo', typeInfo);
     const { name, type } = typeInfo;
+    console.log('name', name);
     allReferences[name] = getTypeReferenceLocation(name, type, sourceFile, checker, program);
   });
   return allReferences;
@@ -476,7 +479,7 @@ export const getAllTypeReferences = (checker: ts.TypeChecker, node: ts.Node): Re
  * @param program a {@link ts.Program} object
  * @returns the context stating where the type originates from
  */
-const getTypeReferenceLocation = (
+export const getTypeReferenceLocation = (
   typeName: string,
   type: ts.Type,
   sourceFile: ts.SourceFile,
@@ -977,7 +980,7 @@ export const updateConstructor = (
       // 1. the `super()` call
       // 2. the new statements we've created to initialize fields
       // 3. the statements currently comprising the body of the constructor
-      statements = [createConstructorBodyWithSuper(), ...statements, ...constructorBodyStatements];
+      statements = [createConstructorBodyWithSuper(parameters), ...statements, ...constructorBodyStatements];
     } else {
       // if no super is needed then the body of the constructor should be:
       //
@@ -996,7 +999,7 @@ export const updateConstructor = (
     // we don't seem to have a constructor, so let's create one and stick it
     // into the array of class elements
     if (needsSuper(classNode)) {
-      statements = [createConstructorBodyWithSuper(), ...statements];
+      statements = [createConstructorBodyWithSuper(parameters), ...statements];
     }
 
     // add the new constructor to the class members, putting it at the
@@ -1036,9 +1039,13 @@ const needsSuper = (classDeclaration: ts.ClassDeclaration): boolean => {
  * Create a statement with a call to `super()` suitable for including in the body of a constructor.
  * @returns a {@link ts.ExpressionStatement} node equivalent to `super()`
  */
-const createConstructorBodyWithSuper = (): ts.ExpressionStatement => {
+const createConstructorBodyWithSuper = (params?: readonly ts.ParameterDeclaration[]): ts.ExpressionStatement => {
+  const args: ts.Identifier[] = params?.flatMap((param) => (
+    param.getText() ? ts.factory.createIdentifier(param.getText()) : []
+  )) || []
+  
   return ts.factory.createExpressionStatement(
-    ts.factory.createCallExpression(ts.factory.createIdentifier('super'), undefined, undefined),
+    ts.factory.createCallExpression(ts.factory.createIdentifier('super'), undefined, args),
   );
 };
 
