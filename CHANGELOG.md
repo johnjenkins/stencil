@@ -1,3 +1,84 @@
+# 🏅 [4.25.0](https://github.com/ionic-team/stencil/compare/v4.24.0...v4.25.0) (2025-01-23)
+
+
+### Bug Fixes
+
+* **SSR:** class prop / state reactivity for target es2022 ([#6099](https://github.com/ionic-team/stencil/issues/6099)) ([07dcfa8](https://github.com/ionic-team/stencil/commit/07dcfa84e223820046fef2e0eab91c313f26fa81)), closes [#6095](https://github.com/ionic-team/stencil/issues/6095)
+* **test:** stop re-running prototype augment in spec tests. ([#6105](https://github.com/ionic-team/stencil/issues/6105)) ([a7d3873](https://github.com/ionic-team/stencil/commit/a7d38735a8572303fa2ea7e154e9a9dc3bf7eecb)), closes [#6104](https://github.com/ionic-team/stencil/issues/6104)
+
+
+### Features
+
+* **mock-doc:** `assignednodes` and `assignedElements` ([#6108](https://github.com/ionic-team/stencil/issues/6108)) ([777aafd](https://github.com/ionic-team/stencil/commit/777aafd57b6b03dc972e0f0bada648bf8af1f42f))
+* **runtime:** Add element to component error handler. Enables error boundaries ([#2979](https://github.com/ionic-team/stencil/issues/2979)) ([5605d48](https://github.com/ionic-team/stencil/commit/5605d48d1c9f42279ab3442b625007edcd7a9e3f))
+
+
+### Reverts
+
+* Revert "fix(custom-elements): hydrate on client side (#5317)" (#6111) ([375fa8b](https://github.com/ionic-team/stencil/commit/375fa8b8a9bac61afbef5dfd69f4e641bae45533))
+
+
+
+# 🚜 [4.24.0](https://github.com/ionic-team/stencil/compare/v4.23.2...v4.24.0) (2025-01-17)
+
+
+### Bug Fixes
+
+* **runtime:** clean up ancestor nodes on resolve ([#6094](https://github.com/ionic-team/stencil/issues/6094)) ([2503dc5](https://github.com/ionic-team/stencil/commit/2503dc5293479f2fc161cdaee61846dffb4dcea6))
+* **testing:** update puppeteer, default to 'new' headless ([#6098](https://github.com/ionic-team/stencil/issues/6098)) ([6537869](https://github.com/ionic-team/stencil/commit/6537869f917449c59e88b8bf57f3dcfdf0f2d077))
+
+
+### Features
+
+* **runtime:** `@Prop` / `@State` now work with runtime decorators ([#6084](https://github.com/ionic-team/stencil/issues/6084)) ([82fc857](https://github.com/ionic-team/stencil/commit/82fc857518883cc75b265f2381e36777e8047840))
+* **slot-polyfill:** patch insertBefore & slotted node parentNode ([#6096](https://github.com/ionic-team/stencil/issues/6096)) ([efb40d5](https://github.com/ionic-team/stencil/commit/efb40d598d3c5e5d4ae58780e03ea0ae9816b211)), closes [#6043](https://github.com/ionic-team/stencil/issues/6043)
+
+#### Thanks
+
+🎉# Thanks for @johnjenkins for their contributions! 🎉
+
+
+## 🌮 [4.23.2](https://github.com/ionic-team/stencil/compare/v4.23.1...v4.23.2) (2025-01-10)
+
+
+### Bug Fixes
+
+* **runtime:** clear up rootAppliedStyles ([#6087](https://github.com/ionic-team/stencil/issues/6087)) ([c4a9c9e](https://github.com/ionic-team/stencil/commit/c4a9c9e7bd168d6e0e6b6d83ad338c0179c1e731)), refs [@ionic-team/ionic-framework#28189](https://github.com/ionic-team/ionic-framework/issues/28189), closes [#5181](https://github.com/ionic-team/stencil/issues/5181), closes [#5172](https://github.com/ionic-team/stencil/issues/5172), closes [#3607](https://github.com/ionic-team/stencil/issues/3607), closes [#3158](https://github.com/ionic-team/stencil/issues/3158)
+
+
+
+## 🌯 [4.23.1](https://github.com/ionic-team/stencil/compare/v4.23.0...v4.23.1) (2025-01-06)
+
+
+### Bug Fixes
+
+* correctly handle svg class attribute within `parseClassList` ([#6085](https://github.com/ionic-team/stencil/issues/6085)) ([5d29255](https://github.com/ionic-team/stencil/commit/5d2925593410fc53ef2fc989c3d33ceb4cf9b503))
+* **mock-doc:** don't force template tags to have a shadowroot ([#6078](https://github.com/ionic-team/stencil/issues/6078)) ([b63039f](https://github.com/ionic-team/stencil/commit/b63039f10c2c4e01114e2d11bc29b60ba1e486d9))
+* runtime decorators ([#6076](https://github.com/ionic-team/stencil/issues/6076)) ([9e6483a](https://github.com/ionic-team/stencil/commit/9e6483a3f41718c46f13cdc1528c8138110688d0)), closes [#3831](https://github.com/ionic-team/stencil/issues/3831)
+* **scoped:** fixes for `<slot />` and slotted nodes ([#6082](https://github.com/ionic-team/stencil/issues/6082)) ([13ee704](https://github.com/ionic-team/stencil/commit/13ee7049d3e30ee17135965ad7e2c6172e637c09)), closes [#6080](https://github.com/ionic-team/stencil/issues/6080), [#6081](https://github.com/ionic-team/stencil/issues/6081) and [#6088](https://github.com/ionic-team/stencil/issues/6088)
+* **SSR:** patch `scoped: true` SSR-ed, slotted nodes next/prev sibling accessors ([#6057](https://github.com/ionic-team/stencil/issues/6057)) ([af102ce](https://github.com/ionic-team/stencil/commit/af102ce8c7faaf1f999c09faefb4aeb55145dade)), closes [#6056](https://github.com/ionic-team/stencil/issues/6056)
+
+
+
+# 🐣 [4.23.0](https://github.com/ionic-team/stencil/compare/v4.22.3...v4.23.0) (2024-12-11)
+
+
+### Bug Fixes
+
+* `patchChildSlotNodes` & `scopedSlotTextContentFix` not being applied ([#6055](https://github.com/ionic-team/stencil/issues/6055)) ([a15bc5d](https://github.com/ionic-team/stencil/commit/a15bc5da60fb579aa80a38369d5464db17c40c38)), closes [#6054](https://github.com/ionic-team/stencil/issues/6054)
+* Change hasHostListenerAttached from var to protoype property ([#6074](https://github.com/ionic-team/stencil/issues/6074)) ([ee4aa0b](https://github.com/ionic-team/stencil/commit/ee4aa0b4bcc2162d7745f188b8e754cb5d7abda2)), closes [#6066](https://github.com/ionic-team/stencil/issues/6066)
+* **mock-doc:** don't show error message for SSR workflows ([#6075](https://github.com/ionic-team/stencil/issues/6075)) ([84a3607](https://github.com/ionic-team/stencil/commit/84a36072dbda4591105ec2bab1e3ac79d38c47ad)), closes [#6073](https://github.com/ionic-team/stencil/issues/6073)
+* rewrite SSR client-side hydration ([#6067](https://github.com/ionic-team/stencil/issues/6067)) ([ec243c2](https://github.com/ionic-team/stencil/commit/ec243c250c6b8f6fc25835ec2db3c7f157c84947)), closes [#6065](https://github.com/ionic-team/stencil/issues/6065), [#6064](https://github.com/ionic-team/stencil/issues/6064), [#6063](https://github.com/ionic-team/stencil/issues/6063), [#5198](https://github.com/ionic-team/stencil/issues/5198)
+* **runtime:** ensure Node is defined ([#6061](https://github.com/ionic-team/stencil/issues/6061)) ([1f5a13f](https://github.com/ionic-team/stencil/commit/1f5a13f07a138e27d9b937c03999837b30e8afc0)), closes [ionic-team/stencil-ds-output-targets#537](https://github.com/ionic-team/stencil-ds-output-targets/issues/537)
+* stop 'experimentalScopedSlotChanges' warning msg on startup ([#6068](https://github.com/ionic-team/stencil/issues/6068)) ([d362700](https://github.com/ionic-team/stencil/commit/d362700ab85c0fc33c4df5d4e0431d1209ac0548)), closes [#6054](https://github.com/ionic-team/stencil/issues/6054)
+
+
+### Features
+
+* prop get set new ([#6050](https://github.com/ionic-team/stencil/issues/6050)) ([7ecb599](https://github.com/ionic-team/stencil/commit/7ecb59993481a2f522916a9d504c5a4738c3f545))
+
+
+
 ## 🐤 [4.22.3](https://github.com/ionic-team/stencil/compare/v4.22.2...v4.22.3) (2024-11-21)
 
 
@@ -708,7 +789,7 @@ As we’ve made further enhancements to support declarative Shadow DOM, the Sten
 * **runtime:** properly type color-interpolation-filter ([#4530](https://github.com/ionic-team/stencil/issues/4530)) ([3ccf753](https://github.com/ionic-team/stencil/commit/3ccf753f13ced6fa1339850882919192e912da30))
 
 
-## Thanks
+### Thanks
 
 🎉 Thanks for @bdriguesdev for their contributions! 🎉
 

@@ -2,6 +2,7 @@ import { getHostRef } from '@platform';
 
 import type * as d from '../../declarations';
 import {
+  COMMENT_NODE_ID,
   CONTENT_REF_ID,
   DEFAULT_DOC_DATA,
   HYDRATE_CHILD_ID,
@@ -37,7 +38,7 @@ export const insertVdomAnnotations = (doc: Document, staticComponents: string[])
 
     orgLocationNodes.forEach((orgLocationNode) => {
       if (orgLocationNode != null && orgLocationNode['s-nr']) {
-        const nodeRef = orgLocationNode['s-nr'];
+        const nodeRef = orgLocationNode['s-nr'] as d.RenderNode;
 
         let hostId = nodeRef['s-host-id'];
         let nodeId = nodeRef['s-node-id'];
@@ -51,6 +52,9 @@ export const insertVdomAnnotations = (doc: Document, staticComponents: string[])
 
           if (nodeRef.nodeType === NODE_TYPE.ElementNode) {
             nodeRef.setAttribute(HYDRATE_CHILD_ID, childId);
+            if (typeof nodeRef['s-sn'] === 'string' && !nodeRef.getAttribute('slot')) {
+              nodeRef.setAttribute('s-sn', nodeRef['s-sn']);
+            }
           } else if (nodeRef.nodeType === NODE_TYPE.TextNode) {
             if (hostId === 0) {
               const textContent = nodeRef.nodeValue?.trim();
@@ -62,7 +66,11 @@ export const insertVdomAnnotations = (doc: Document, staticComponents: string[])
             }
             const commentBeforeTextNode = doc.createComment(childId);
             commentBeforeTextNode.nodeValue = `${TEXT_NODE_ID}.${childId}`;
-            insertBefore(nodeRef.parentNode, commentBeforeTextNode, nodeRef);
+            insertBefore(nodeRef.parentNode, commentBeforeTextNode as any, nodeRef);
+          } else if (nodeRef.nodeType === NODE_TYPE.CommentNode) {
+            const commentBeforeTextNode = doc.createComment(childId);
+            commentBeforeTextNode.nodeValue = `${COMMENT_NODE_ID}.${childId}`;
+            nodeRef.parentNode.insertBefore(commentBeforeTextNode, nodeRef);
           }
         }
 
@@ -73,7 +81,7 @@ export const insertVdomAnnotations = (doc: Document, staticComponents: string[])
           if (orgLocationParentNode['s-en'] === '') {
             // ending with a "." means that the parent element
             // of this node's original location is a SHADOW dom element
-            // and this node is apart of the root level light dom
+            // and this node is a part of the root level light dom
             orgLocationNodeId += `.`;
           } else if (orgLocationParentNode['s-en'] === 'c') {
             // ending with a ".c" means that the parent element
@@ -222,6 +230,9 @@ const insertChildVNodeAnnotations = (
 
   if (childElm.nodeType === NODE_TYPE.ElementNode) {
     childElm.setAttribute(HYDRATE_CHILD_ID, childId);
+    if (typeof childElm['s-sn'] === 'string' && !childElm.getAttribute('slot')) {
+      childElm.setAttribute('s-sn', childElm['s-sn']);
+    }
   } else if (childElm.nodeType === NODE_TYPE.TextNode) {
     const parentNode = childElm.parentNode;
     const nodeName = parentNode?.nodeName;
@@ -229,7 +240,7 @@ const insertChildVNodeAnnotations = (
       const textNodeId = `${TEXT_NODE_ID}.${childId}`;
 
       const commentBeforeTextNode = doc.createComment(textNodeId);
-      insertBefore(parentNode, commentBeforeTextNode, childElm);
+      insertBefore(parentNode, commentBeforeTextNode as any, childElm);
     }
   } else if (childElm.nodeType === NODE_TYPE.CommentNode) {
     if (childElm['s-sr']) {

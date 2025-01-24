@@ -1,4 +1,5 @@
 import { BUILD } from '@app-data';
+import { reWireGetterSetter } from '@utils/es2022-rewire-class-members';
 
 import type * as d from '../declarations';
 
@@ -22,6 +23,15 @@ const hostRefs: WeakMap<d.RuntimeRef, d.HostRef> = /*@__PURE__*/ BUILD.hotModule
   : new WeakMap();
 
 /**
+ * Given a {@link d.RuntimeRef} remove the corresponding {@link d.HostRef} from
+ * the {@link hostRefs} WeakMap.
+ *
+ * @param ref the runtime ref of interest
+ * @returns — true if the element was successfully removed, or false if it was not present.
+ */
+export const deleteHostRef = (ref: d.RuntimeRef) => hostRefs.delete(ref);
+
+/**
  * Given a {@link d.RuntimeRef} retrieve the corresponding {@link d.HostRef}
  *
  * @param ref the runtime ref of interest
@@ -35,10 +45,13 @@ export const getHostRef = (ref: d.RuntimeRef): d.HostRef | undefined => hostRefs
  *
  * @param lazyInstance the lazy instance of interest
  * @param hostRef that instances `HostRef` object
- * @returns a reference to the host ref WeakMap
  */
-export const registerInstance = (lazyInstance: any, hostRef: d.HostRef) =>
+export const registerInstance = (lazyInstance: any, hostRef: d.HostRef) => {
   hostRefs.set((hostRef.$lazyInstance$ = lazyInstance), hostRef);
+  if (BUILD.modernPropertyDecls && (BUILD.state || BUILD.prop)) {
+    reWireGetterSetter(lazyInstance, hostRef);
+  }
+};
 
 /**
  * Register a host element for a Stencil component, setting up various metadata
@@ -67,7 +80,14 @@ export const registerHost = (hostElement: d.HostElement, cmpMeta: d.ComponentRun
     hostElement['s-p'] = [];
     hostElement['s-rc'] = [];
   }
-  return hostRefs.set(hostElement, hostRef);
+
+  const ref = hostRefs.set(hostElement, hostRef);
+
+  if (!BUILD.lazyLoad && BUILD.modernPropertyDecls && (BUILD.state || BUILD.prop)) {
+    reWireGetterSetter(hostElement, hostRef);
+  }
+
+  return ref;
 };
 
 export const isMemberInElement = (elm: any, memberName: string) => memberName in elm;

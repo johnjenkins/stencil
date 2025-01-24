@@ -11,7 +11,15 @@ import { renderVdom } from './vdom/vdom-render';
 
 export const attachToAncestor = (hostRef: d.HostRef, ancestorComponent?: d.HostElement) => {
   if (BUILD.asyncLoading && ancestorComponent && !hostRef.$onRenderResolve$ && ancestorComponent['s-p']) {
-    ancestorComponent['s-p'].push(new Promise((r) => (hostRef.$onRenderResolve$ = r)));
+    const index = ancestorComponent['s-p'].push(
+      new Promise(
+        (r) =>
+          (hostRef.$onRenderResolve$ = () => {
+            ancestorComponent['s-p'].splice(index - 1, 1);
+            r();
+          }),
+      ),
+    );
   }
 };
 
@@ -84,7 +92,7 @@ const dispatchHooks = (hostRef: d.HostRef, isInitialLoad: boolean): Promise<void
     if (BUILD.lazyLoad && BUILD.hostListener) {
       hostRef.$flags$ |= HOST_FLAGS.isListenReady;
       if (hostRef.$queuedListeners$) {
-        hostRef.$queuedListeners$.map(([methodName, event]) => safeCall(instance, methodName, event));
+        hostRef.$queuedListeners$.map(([methodName, event]) => safeCall(instance, methodName, event, elm));
         hostRef.$queuedListeners$ = undefined;
       }
     }
@@ -95,7 +103,7 @@ const dispatchHooks = (hostRef: d.HostRef, isInitialLoad: boolean): Promise<void
       // rendering the component, doing other lifecycle stuff, etc. So
       // in that case we assign the returned promise to the variable we
       // declared above to hold a possible 'queueing' Promise
-      maybePromise = safeCall(instance, 'componentWillLoad');
+      maybePromise = safeCall(instance, 'componentWillLoad', undefined, elm);
     }
   } else {
     emitLifecycleEvent(elm, 'componentWillUpdate');
@@ -106,13 +114,13 @@ const dispatchHooks = (hostRef: d.HostRef, isInitialLoad: boolean): Promise<void
       // we specify that our runtime will wait for that `Promise` to
       // resolve before the component re-renders. So if the method
       // returns a `Promise` we need to keep it around!
-      maybePromise = safeCall(instance, 'componentWillUpdate');
+      maybePromise = safeCall(instance, 'componentWillUpdate', undefined, elm);
     }
   }
 
   emitLifecycleEvent(elm, 'componentWillRender');
   if (BUILD.cmpWillRender) {
-    maybePromise = enqueue(maybePromise, () => safeCall(instance, 'componentWillRender'));
+    maybePromise = enqueue(maybePromise, () => safeCall(instance, 'componentWillRender', undefined, elm));
   }
 
   endSchedule();
@@ -318,7 +326,7 @@ export const postUpdateComponent = (hostRef: d.HostRef) => {
     if (BUILD.isDev) {
       hostRef.$flags$ |= HOST_FLAGS.devOnRender;
     }
-    safeCall(instance, 'componentDidRender');
+    safeCall(instance, 'componentDidRender', undefined, elm);
     if (BUILD.isDev) {
       hostRef.$flags$ &= ~HOST_FLAGS.devOnRender;
     }
@@ -337,7 +345,7 @@ export const postUpdateComponent = (hostRef: d.HostRef) => {
       if (BUILD.isDev) {
         hostRef.$flags$ |= HOST_FLAGS.devOnDidLoad;
       }
-      safeCall(instance, 'componentDidLoad');
+      safeCall(instance, 'componentDidLoad', undefined, elm);
       if (BUILD.isDev) {
         hostRef.$flags$ &= ~HOST_FLAGS.devOnDidLoad;
       }
@@ -361,7 +369,7 @@ export const postUpdateComponent = (hostRef: d.HostRef) => {
       if (BUILD.isDev) {
         hostRef.$flags$ |= HOST_FLAGS.devOnRender;
       }
-      safeCall(instance, 'componentDidUpdate');
+      safeCall(instance, 'componentDidUpdate', undefined, elm);
       if (BUILD.isDev) {
         hostRef.$flags$ &= ~HOST_FLAGS.devOnRender;
       }
@@ -430,14 +438,15 @@ export const appDidLoad = (who: string) => {
  * @param instance any object that may or may not contain methods
  * @param method method name
  * @param arg single arbitrary argument
+ * @param elm the element which made the call
  * @returns result of method call if it exists, otherwise `undefined`
  */
-export const safeCall = (instance: any, method: string, arg?: any) => {
+export const safeCall = (instance: any, method: string, arg?: any, elm?: HTMLElement) => {
   if (instance && instance[method]) {
     try {
       return instance[method](arg);
     } catch (e) {
-      consoleError(e);
+      consoleError(e, elm);
     }
   }
   return undefined;

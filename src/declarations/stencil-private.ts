@@ -141,6 +141,7 @@ export interface BuildFeatures {
   propBoolean: boolean;
   propNumber: boolean;
   propString: boolean;
+  modernPropertyDecls: boolean;
 
   // lifecycle events
   lifecycle: boolean;
@@ -564,6 +565,7 @@ export interface ComponentCompilerFeatures {
   hasMember: boolean;
   hasMethod: boolean;
   hasMode: boolean;
+  hasModernPropertyDecls: boolean;
   hasProp: boolean;
   hasPropBoolean: boolean;
   hasPropNumber: boolean;
@@ -686,6 +688,7 @@ export interface ComponentCompilerStaticProperty {
   defaultValue?: string;
   getter: boolean;
   setter: boolean;
+  ogPropName?: string;
 }
 
 /**
@@ -1144,6 +1147,10 @@ export interface HostElement extends HTMLElement {
    */
   ['s-hmr']?: (versionId: string) => void;
 
+  /**
+   * A list of nested nested hydration promises that
+   * must be resolved for the top, ancestor component to be fully hydrated
+   */
   ['s-p']?: Promise<void>[];
 
   componentOnReady?: () => Promise<this>;
@@ -1389,14 +1396,15 @@ export interface RenderNode extends HostElement {
   ['s-cn']?: boolean;
 
   /**
-   * Is a slot reference node:
-   * This is a node that represents where a slot
-   * was originally located.
+   * Is a `slot` node when `shadow: false` (or `scoped: true`).
+   *
+   * This is a node (either empty text-node or `<slot-fb>` element)
+   * that represents where a `<slot>` is located in the original JSX.
    */
   ['s-sr']?: boolean;
 
   /**
-   * Slot name
+   * Slot name of either the slot itself or the slotted node
    */
   ['s-sn']?: string;
 
@@ -1433,7 +1441,13 @@ export interface RenderNode extends HostElement {
    * This is a reference for a original location node
    * back to the node that's been moved around.
    */
-  ['s-nr']?: RenderNode;
+  ['s-nr']?: PatchedSlotNode | RenderNode;
+
+  /**
+   * Original Order:
+   * During SSR; a number representing the order of a slotted node
+   */
+  ['s-oo']?: number;
 
   /**
    * Scope Id
@@ -1459,9 +1473,143 @@ export interface RenderNode extends HostElement {
   /**
    * On a `scoped: true` component
    * with `experimentalSlotFixes` flag enabled,
-   * returns the internal `childNodes` of the scoped element
+   * returns the internal `childNodes` of the component
    */
   readonly __childNodes?: NodeListOf<ChildNode>;
+
+  /**
+   * On a `scoped: true` component
+   * with `experimentalSlotFixes` flag enabled,
+   * returns the internal `children` of the component
+   */
+  readonly __children?: HTMLCollectionOf<Element>;
+
+  /**
+   * On a `scoped: true` component
+   * with `experimentalSlotFixes` flag enabled,
+   * returns the internal `firstChild` of the component
+   */
+  readonly __firstChild?: ChildNode;
+
+  /**
+   * On a `scoped: true` component
+   * with `experimentalSlotFixes` flag enabled,
+   * returns the internal `lastChild` of the component
+   */
+  readonly __lastChild?: ChildNode;
+
+  /**
+   * On a `scoped: true` component
+   * with `experimentalSlotFixes` flag enabled,
+   * returns the internal `textContent` of the component
+   */
+  __textContent?: string;
+
+  /**
+   * On a `scoped: true` component
+   * with `experimentalSlotFixes` flag enabled,
+   * gives access to the original `append` method
+   */
+  __append?: (...nodes: (Node | string)[]) => void;
+
+  /**
+   * On a `scoped: true` component
+   * with `experimentalSlotFixes` flag enabled,
+   * gives access to the original `prepend` method
+   */
+  __prepend?: (...nodes: (Node | string)[]) => void;
+
+  /**
+   * On a `scoped: true` component
+   * with `experimentalSlotFixes` flag enabled,
+   * gives access to the original `appendChild` method
+   */
+  __appendChild?: <T extends Node>(newChild: T) => T;
+
+  /**
+   * On a `scoped: true` component
+   * with `experimentalSlotFixes` flag enabled,
+   * gives access to the original `insertBefore` method
+   */
+  __insertBefore?: <T extends Node>(node: T, child: Node | null) => T;
+
+  /**
+   * On a `scoped: true` component
+   * with `experimentalSlotFixes` flag enabled,
+   * gives access to the original `removeChild` method
+   */
+  __removeChild?: <T extends Node>(child: T) => T;
+}
+
+export interface PatchedSlotNode extends Node {
+  /**
+   * Slot name
+   */
+  ['s-sn']?: string;
+
+  /**
+   * Original Location Reference:
+   * A reference pointing to the comment
+   * which represents the original location
+   * before it was moved to its slot.
+   */
+  ['s-ol']?: RenderNode;
+
+  /**
+   * Slot host tag name:
+   * This is the tag name of the element where this node
+   * has been moved to during slot relocation.
+   *
+   * This allows us to check if the node has been moved and prevent
+   * us from thinking a node _should_ be moved when it may already be in
+   * its final destination.
+   *
+   * This value is set to `undefined` whenever the node is put back into its original location.
+   */
+  ['s-sh']?: string;
+
+  /**
+   * Is a `slot` node when `shadow: false` (or `scoped: true`).
+   *
+   * This is a node (either empty text-node or `<slot-fb>` element)
+   * that represents where a `<slot>` is located in the original JSX.
+   */
+  ['s-sr']?: boolean;
+
+  /**
+   * On a `scoped: true` component
+   * with `experimentalSlotFixes` flag enabled,
+   * returns the actual `parentNode` of the component
+   */
+  __parentNode?: RenderNode;
+
+  /**
+   * On a `scoped: true` component
+   * with `experimentalSlotFixes` flag enabled,
+   * returns the actual `nextSibling` of the component
+   */
+  __nextSibling?: RenderNode;
+
+  /**
+   * On a `scoped: true` component
+   * with `experimentalSlotFixes` flag enabled,
+   * returns the actual `previousSibling` of the component
+   */
+  __previousSibling?: RenderNode;
+
+  /**
+   * On a `scoped: true` component
+   * with `experimentalSlotFixes` flag enabled,
+   * returns the actual `nextElementSibling` of the component
+   */
+  __nextElementSibling?: RenderNode;
+
+  /**
+   * On a `scoped: true` component
+   * with `experimentalSlotFixes` flag enabled,
+   * returns the actual `nextElementSibling` of the component
+   */
+  __previousElementSibling?: RenderNode;
 }
 
 export type LazyBundlesRuntimeData = LazyBundleRuntimeData[];

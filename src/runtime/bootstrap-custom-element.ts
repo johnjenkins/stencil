@@ -1,5 +1,14 @@
 import { BUILD } from '@app-data';
-import { addHostEventListeners, forceUpdate, getHostRef, registerHost, styles, supportsShadow } from '@platform';
+import {
+  addHostEventListeners,
+  deleteHostRef,
+  forceUpdate,
+  getHostRef,
+  plt,
+  registerHost,
+  styles,
+  supportsShadow,
+} from '@platform';
 import { CMP_FLAGS } from '@utils';
 
 import type * as d from '../declarations';
@@ -67,16 +76,16 @@ export const proxyCustomElement = (Cstr: any, compactMeta: d.ComponentRuntimeMet
 
   const originalConnectedCallback = Cstr.prototype.connectedCallback;
   const originalDisconnectedCallback = Cstr.prototype.disconnectedCallback;
-  let hasHostListenerAttached = false;
   Object.assign(Cstr.prototype, {
+    __hasHostListenerAttached: false,
     __registerHost() {
       registerHost(this, cmpMeta);
     },
     connectedCallback() {
-      if (!hasHostListenerAttached) {
+      if (!this.__hasHostListenerAttached) {
         const hostRef = getHostRef(this);
         addHostEventListeners(this, hostRef, cmpMeta.$listeners$, false);
-        hasHostListenerAttached = true;
+        this.__hasHostListenerAttached = true;
       }
 
       connectedCallback(this);
@@ -89,6 +98,20 @@ export const proxyCustomElement = (Cstr: any, compactMeta: d.ComponentRuntimeMet
       if (BUILD.disconnectedCallback && originalDisconnectedCallback) {
         originalDisconnectedCallback.call(this);
       }
+
+      /**
+       * Clean up Node references lingering around in `hostRef` objects
+       * to ensure GC can clean up the memory.
+       */
+      plt.raf(() => {
+        const hostRef = getHostRef(this);
+        if (hostRef?.$vnode$?.$elm$ instanceof Node && !hostRef.$vnode$.$elm$.isConnected) {
+          delete hostRef.$vnode$;
+        }
+        if (this instanceof Node && !this.isConnected) {
+          deleteHostRef(this);
+        }
+      });
     },
     __attachShadow() {
       if (supportsShadow) {
